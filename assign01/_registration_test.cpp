@@ -29,9 +29,9 @@ int main(int argc, char **argv)
     reg.add_matrix_b(eig2);
     reg.add_matrix_b(eig3);
     reg.add_matrix_b(eig4);
-    Eigen::MatrixXf m = reg.best_plane_from_points().transpose();
-    std::cout << m << std::endl;
-    auto svd = m.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV);
+    Matrix m = reg.best_plane_from_points().transpose();
+    std::cout << m.as_str() << std::endl;
+    auto svd = m.get().jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV);
     Eigen::MatrixXf r = svd.matrixU() * svd.matrixV().transpose();
     std::cout << r << std::endl;
 }

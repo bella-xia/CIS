@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <cmath>
+#include <iostream>
 #include <Eigen/Dense>
 
 class Matrix
@@ -11,7 +12,7 @@ class Matrix
 
 private:
     std::string name;
-    std::vector<std::vector<float>> mat;
+    Eigen::MatrixXf mat;
     int nrow;
     int ncol;
 
@@ -19,7 +20,10 @@ public:
     Matrix();
     Matrix(int dim);
     Matrix(int nrow, int ncol);
-    Matrix(std::vector<std::vector<float>> mat) : name("taylor"), mat(mat), nrow(mat.size()), ncol(mat[0].size()) {}
+    Matrix(Eigen::MatrixXf mat) : name("taylor"), mat(mat),
+                                  nrow(static_cast<int>(mat.rows())), ncol(static_cast<int>(mat.cols())) {}
+    Matrix(float p0, float p1, float p2, float p3, float p4, float p5, float p6, float p7, float p8);
+    Matrix(float p0, float p1, float p2);
 
     ~Matrix();
 
@@ -31,14 +35,16 @@ public:
     Matrix cross(const Matrix &other) const { return skew() * other; }
     float magnitude() const;
 
-    void assign(int row, int col, float val) { mat[row][col] = val; }
+    void assign(int row, int col, float val) { mat(row, col) = val; }
 
-    std::vector<std::vector<float>> get() const { return mat; }
-    float get_pos(int row, int col) const { return mat[row][col]; }
+    std::string get_name() const { return name; }
+    Eigen::MatrixXf get() const { return mat; }
+    float get_pos(int row, int col) const { return mat(row, col); }
     int get_row() const { return nrow; }
     int get_col() const { return ncol; }
 
-    std::string asstr() const;
+    std::string as_str() const;
+    void print_str() const;
 };
 
 #endif

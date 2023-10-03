@@ -1,13 +1,13 @@
 CXX_SRCS = matrix.cpp rotation.cpp position.cpp frame.cpp main.cpp
 CXX_OBJS = $(CXX_SRCS:%.cpp=%.o)
 
-CXX_MATRIX_SRCS = matrix.cpp function.cpp  _matrix_test.cpp
+CXX_MATRIX_SRCS = matrix.cpp  _matrix_test.cpp
 CXX_MATRIX_OBJS = $(CXX_MATRIX_SRCS:%.cpp=%.o)
 
-CXX_FRAME_SRCS = matrix.cpp rotation.cpp position.cpp frame.cpp function.cpp _frame_test.cpp
+CXX_FRAME_SRCS = matrix.cpp rotation.cpp position.cpp frame.cpp _frame_test.cpp
 CXX_FRAME_OBJS = $(CXX_FRAME_SRCS:%.cpp=%.o)
 
-CXX_REGIS_SRCS = registration.cpp matrix.cpp rotation.cpp position.cpp frame.cpp function.cpp _registration_test.cpp
+CXX_REGIS_SRCS = registration.cpp matrix.cpp rotation.cpp position.cpp frame.cpp _registration_test.cpp
 CXX_REGIS_OBJS = $(CXX_REGIS_SRCS:%.cpp=%.o)
 
 CXX = g++ 
@@ -31,7 +31,7 @@ cis : $(CXX_OBJS)
 	$(CXX) -o $@ $(CXX_OBJS)
 
 clean :
-	rm -f *.o minilang depend.mak
+	rm -f *.o matrix frame regis cis depend.mak
 
 depend :
 	$(CXX) $(CXXFLAGS) -M $(CXX_SRCS) >> depend.mak

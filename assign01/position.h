@@ -15,7 +15,12 @@ public:
     Position(Matrix pos) : m_pos(pos), delta_pos(Matrix(3, 1)) {}
     Position(Matrix pos, Matrix err) : m_pos(pos), delta_pos(err) {}
 
-    void assign_err(Matrix err) { delta_pos = err; }
+    ~Position();
+
+    void assign_err(Matrix err)
+    {
+        delta_pos = err;
+    }
 
     Matrix get_pos() const { return m_pos; }
     Matrix get_delta_pos() const { return delta_pos; }

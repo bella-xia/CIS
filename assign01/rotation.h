@@ -3,44 +3,58 @@
 
 #include "matrix.h"
 
-enum rotKind
-{
-    angle = 100,
-    matrix
+// enum rotKind
+// {
+//     angle = 100,
+//     matrix
 
+// };
+
+class Ang_rep
+{
+private:
+    Matrix m_axis;
+    float m_angle;
+
+public:
+    Ang_rep() : m_axis(Matrix(3, 1)), m_angle(0.0) {}
+    Ang_rep(Matrix axis, float ang) : m_axis(axis), m_angle(ang) {}
+    Matrix get_axis() const { return m_axis; }
+    float get_angle() const { return m_angle; }
+    void assign_axis(Matrix axis) { m_axis = axis; }
+    void assign_angle(float ang) { m_angle = ang; }
 };
 
 class Rotation
 {
 
 private:
-    enum rotKind m_kind;
-    enum rotKind delta_kind;
     Matrix m_rot;
-    Matrix delta_rot;
-    float m_angle;
-    float delta_angle;
-    Matrix m_axis;
-    Matrix delta_axis;
+
+    Ang_rep delta_rot;
 
 public:
-    Rotation() : m_kind(matrix), delta_kind(angle), m_rot(Matrix(3, 3)), delta_angle(0.0), delta_axis(Matrix(3, 1)) {}
-    Rotation(Matrix m_rot, Matrix err) : m_kind(matrix), delta_kind(angle), m_rot(m_rot), delta_axis(err), delta_angle(err.magnitude()) {}
+    Rotation() : m_rot(Matrix(3, 3)), delta_rot(Ang_rep())
+    {
+    }
+
+    Rotation(Matrix m_rot, Matrix err) : m_rot(m_rot), delta_rot(Ang_rep(err, err.magnitude()))
+    {
+    }
 
     void assign_err(Matrix err)
     {
-        delta_axis = err;
-        delta_angle = err.magnitude();
+        delta_rot = Ang_rep(err, err.magnitude());
     }
 
     void assign_err(Matrix err, float ferr)
     {
-        delta_axis = err;
-        delta_angle = ferr;
+        delta_rot = Ang_rep(err, ferr);
     }
 
     Matrix get_rot() const { return m_rot; }
-    Matrix get_delta_rot() const;
+    Matrix get_delta_rot() const { return Matrix(3) + delta_rot.get_axis().skew(); }
+    ~Rotation();
 };
 
 #endif

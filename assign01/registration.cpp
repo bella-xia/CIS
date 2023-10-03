@@ -12,25 +12,25 @@ void Registration::calculate_midpoints()
         0;
     for (int i = 0; i < size_a; ++i)
     {
-        sum_mat_a += eigens_a[i];
+        sum_mat_a += eigens_a[i].get();
     }
     mid_a = sum_mat_a / size_a;
     for (int j = 0; j < size_b; ++j)
     {
-        sum_mat_b += eigens_b[j];
+        sum_mat_b += eigens_b[j].get();
     }
     mid_b = sum_mat_b / size_b;
 }
 
-Eigen::MatrixXf Registration::best_plane_from_points()
+Matrix Registration::best_plane_from_points()
 {
     // copy coordinates to  matrix in Eigen format
     Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> coord_a(3, size_a);
     Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> coord_b(3, size_b);
-    for (size_t i = 0; i < size_a; ++i)
-        coord_a.col(i) = eigens_a[i].col(0);
-    for (size_t j = 0; j < size_b; ++j)
-        coord_b.col(j) = eigens_b[j].col(0);
+    for (int i = 0; i < size_a; ++i)
+        coord_a.col(i) = eigens_a[i].get().col(0);
+    for (int j = 0; j < size_b; ++j)
+        coord_b.col(j) = eigens_b[j].get().col(0);
 
     calculate_midpoints();
 
@@ -53,5 +53,5 @@ Eigen::MatrixXf Registration::best_plane_from_points()
     std::cout << coord_a.transpose() * m_t.transpose() << std::endl;
     std::cout << coord_b.transpose() << std::endl;
 
-    return m_t;
+    return Matrix(m_t);
 }

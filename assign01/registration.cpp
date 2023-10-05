@@ -29,7 +29,6 @@ void Registration::calculate_midpoint_b()
 void Registration::get_matrix_a_from_b()
 {
     calculate_midpoint_b();
-    std::cout << "mid point for b" << mid_b << std::endl;
     Matrix neg_mid_b_mat = Matrix(mid_b) * -1;
     for (int i = 0; i < size_b; i++)
     {
@@ -42,8 +41,6 @@ Frame Registration::point_cloud_registration()
     // copy coordinates to  matrix in Eigen format
     Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> coord_a(3, size_a);
     Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> coord_b(3, size_b);
-    std::cout << size_a << std::endl;
-    std::cout << size_b << std::endl;
     for (int i = 0; i < size_a; ++i)
         coord_a.col(i) = eigens_a[i].get().col(0);
     for (int j = 0; j < size_b; ++j)
@@ -82,7 +79,6 @@ Matrix Registration::pivot_calibration(const std::vector<Frame> &f)
     Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> rot_mat(3 * length, 6);
     Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> pos_mat(3 * length, 1);
     pass_matrix(rot_mat, pos_mat, f);
-    std::cout << pos_mat << std::endl;
     Matrix p_ts = Matrix(rot_mat.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(pos_mat));
     return p_ts;
 }

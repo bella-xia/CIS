@@ -38,7 +38,6 @@ int main(int argc, char **argv)
     // empivot
     std::vector<f_data> em_frames;
     read_empivot(path_name + debugs[idx] + empivot_str, em_frames);
-    std::cout << "em frame size: " << em_frames.size() << std::endl;
 
     // optpivot
     std::vector<f_data> opt_frames;
@@ -96,18 +95,15 @@ int main(int argc, char **argv)
         {
             fg_reg.add_matrix_b(Matrix(em_frames[frame_num].data_g[i]));
         }
-        std::cout << "here" << std::endl;
-        fg_reg.get_matrix_a_from_b();
-        std::cout << "got metrix a" << std::endl;
+        if (frame_num == 0)
+        {
+            fg_reg.get_matrix_a_from_b();
+        }
         Frame fg = fg_reg.point_cloud_registration();
-        std::cout << "point cloud" << std::endl;
         fg_frames.push_back(fg);
-        fg_reg.clean_matrix_a();
         fg_reg.clean_matrix_b();
     }
-    std::cout << "pivot" << std::endl;
     Matrix p_ts = fg_reg.pivot_calibration(fg_frames);
-    std::cout << "complete pivot" << std::endl;
 
     std::string output_filename = "PA1 Student Answer/pa1-debug-" + debugs[idx] + "-output.txt";
     std::ofstream out_file(output_filename);

@@ -19,6 +19,6 @@ int main(int argc, char **argv)
     (m3_3 * m3_3_T).print_str();
     (m3_3_T * m3_3).print_str();
     (m3_3_T + m3_3).print_str();
-
+    (m3_3_T * -1).print_str();
     return 0;
 }

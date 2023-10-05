@@ -24,11 +24,13 @@ public:
                                   nrow(static_cast<int>(mat.rows())), ncol(static_cast<int>(mat.cols())) {}
     Matrix(float p0, float p1, float p2, float p3, float p4, float p5, float p6, float p7, float p8);
     Matrix(float p0, float p1, float p2);
+    Matrix(std::vector<float> &v);
 
     ~Matrix();
 
     Matrix operator+(const Matrix &other) const;
     Matrix operator*(const Matrix &other) const;
+    Matrix operator*(const int i) { return Matrix(mat * i); }
     Matrix transpose() const;
     Matrix inverse() const;
     Matrix skew() const;

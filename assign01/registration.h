@@ -25,10 +25,25 @@ public:
         eigens_b.push_back(eigen);
         size_b++;
     }
-    void calculate_midpoints();
+    void clean_matrix_b()
+    {
+        eigens_b.clear();
+        size_b = 0;
+    }
+    void clean_matrix_a()
+    {
+        eigens_a.clear();
+        size_a = 0;
+    }
+
+    void calculate_midpoint_a();
+    void calculate_midpoint_b();
+    void get_matrix_a_from_b();
     Matrix get_midpoint_a() { return Matrix(mid_a); }
     Matrix get_midpoint_b() { return Matrix(mid_b); }
-    Matrix best_plane_from_points();
+    Frame point_cloud_registration();
+    Matrix pivot_calibration(const std::vector<Frame> &f);
+    void pass_matrix(Eigen::MatrixXf &rot_mat, Eigen::MatrixXf &pos_mat, const std::vector<Frame> &f);
 
 private:
 };

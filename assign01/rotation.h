@@ -38,6 +38,10 @@ public:
     {
     }
 
+    Rotation(Matrix m_rot) : m_rot(m_rot), delta_rot(Ang_rep())
+    {
+    }
+
     Rotation(Matrix m_rot, Matrix err) : m_rot(m_rot), delta_rot(Ang_rep(err, err.magnitude()))
     {
     }

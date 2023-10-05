@@ -28,7 +28,11 @@ public:
     void assign_rot(Rotation rot) { this->rot = rot; }
     void assign_pos(Position pos) { this->pos = pos; }
 
+    Rotation get_rot() const { return rot; }
+    Position get_pos() const { return pos; }
+
     Matrix operator*(const Matrix &mat) const;
+    Frame inverse() const;
 };
 
 #endif

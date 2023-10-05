@@ -32,6 +32,8 @@ Matrix::Matrix(float p0, float p1, float p2) : name("taylor"), nrow(3), ncol(1)
         p2;
 }
 
+Matrix::Matrix(std::vector<float> &v) : Matrix(v[0], v[1], v[2]) {}
+
 Matrix Matrix::operator+(const Matrix &other) const
 {
     return Matrix(mat + other.get());
@@ -67,6 +69,11 @@ Matrix Matrix::skew() const
     mat_skew.assign(2, 0, -mat(1, 0));
     mat_skew.assign(2, 1, mat(0, 0));
     return mat_skew;
+}
+
+Matrix Matrix::inverse() const
+{
+    return Matrix(mat.inverse());
 }
 
 std::string Matrix::as_str() const

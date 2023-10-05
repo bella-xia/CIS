@@ -109,7 +109,6 @@ int main(int argc, char **argv)
     std::ofstream out_file(output_filename);
     if (out_file.is_open())
     {
-        out_file << p_ts.get_pos(0, 0) << ", " << p_ts.get_pos(1, 0) << ", " << p_ts.get_pos(2, 0) << "\n";
         out_file << p_ts.get_pos(3, 0) << ", " << p_ts.get_pos(4, 0) << ", " << p_ts.get_pos(5, 0) << "\n";
         for (int i = 0; i < (int)C_mat.size(); ++i)
         {

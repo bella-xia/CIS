@@ -14,7 +14,6 @@ private:
 public:
     Registration() : eigens_a(std::vector<Matrix>()), eigens_b(std::vector<Matrix>()),
                      size_a(0), size_b(0), mid_a(Eigen::MatrixXf(3, 1)), mid_b(Eigen::MatrixXf(3, 1)){};
-    bool read_file(std::string input);
     void add_matrix_a(Matrix eigen)
     {
         eigens_a.push_back(eigen);

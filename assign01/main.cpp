@@ -119,13 +119,43 @@ int main(int argc, char **argv)
         fg_frames.push_back(fg);
         fg_reg.clean_matrix_b();
     }
-    Matrix p_ts = fg_reg.pivot_calibration(fg_frames);
+    Matrix em_p_ts = fg_reg.pivot_calibration(fg_frames);
 
+
+    // calibrate optical pivot
+    Registration fd_reg_2 = Registration();
+    Registration fh_reg = Registration();
+    std::vector<Frame> fh_frames = std::vector<Frame>();
+    for (int i = 0; i < (int)data_d.size(); ++i)
+    {
+        fd_reg_2.add_matrix_a(Matrix(data_d[i]));
+    }
+    
+    for (int frame_num = 0; frame_num < (int) opt_frames.size(); ++frame_num) {
+        //calculate F_d
+        for(int i = 0; i < opt_frames[frame_num].data_d.size(); i++){
+            fd_reg_2.add_matrix_b(Matrix(opt_frames[frame_num].data_d[i]));
+        }
+        Frame fd_2 = fd_reg_2.point_cloud_registration();
+        for(int i = 0; i < opt_frames[frame_num].data_h.size(); i++){
+            fh_reg.add_matrix_b(Matrix(fd_2.inverse() * opt_frames[frame_num].data_h[i]));
+        }
+        if(frame_num == 0) {
+            fh_reg.get_matrix_a_from_b();
+        }
+        Frame fh = fh_reg.point_cloud_registration();
+        fh_frames.push_back(fh);
+        fh_reg.clean_matrix_b();
+        fd_reg_2.clean_matrix_b();
+    }
+    Matrix opt_p_ts = fh_reg.pivot_calibration(fh_frames);
     std::string output_filename = answer_path_name + idx + "-output.txt";
     std::ofstream out_file(output_filename);
     if (out_file.is_open())
     {
-        out_file << p_ts.get_pos(3, 0) << ", " << p_ts.get_pos(4, 0) << ", " << p_ts.get_pos(5, 0) << "\n";
+        out_file << (int) C_mat[0].size() << ", " << C_mat.size() << ", " << output_filename << std::endl;
+        out_file << em_p_ts.get_pos(3, 0) << ", " << em_p_ts.get_pos(4, 0) << ", " << em_p_ts.get_pos(5, 0) << "\n";
+        out_file << opt_p_ts.get_pos(3, 0) << ", " << opt_p_ts.get_pos(4, 0) << ", " << opt_p_ts.get_pos(5, 0) << "\n";
         for (int i = 0; i < (int)C_mat.size(); ++i)
         {
             for (int j = 0; j < (int)C_mat[i].size(); ++j)

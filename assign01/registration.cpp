@@ -67,6 +67,9 @@ Frame Registration::point_cloud_registration()
     Eigen::MatrixXf m_t = svd_1.solve(coord_b.transpose());
     Matrix m = Matrix(m_t.transpose());
     auto svd_2 = m.get().jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV);
+    
+    // we refered to http://www.info.hiroshima-cu.ac.jp/~miyazaki/knowledge/teche0062.html to orthogonalize 
+    // result of SVD to r. 
     Eigen::MatrixXf r = svd_2.matrixU() * svd_2.matrixV().transpose();
     Eigen::MatrixXf p = mid_b - r * mid_a;
 

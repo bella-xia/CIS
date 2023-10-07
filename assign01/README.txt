@@ -1,10 +1,8 @@
-TODO:
-1. citation
-2. change the absolute file pathway to relative
+NAME: Bella Xia and Hanbei Zhou
 
 Excutable: cis
 Instruction: 
-To run the rebug or unknown data provided, type:
+To run the excutable on rebug or unknown data provided, type the following line in terminal:
     ./cis index
 where index is a to k. When index is between a-g, the algorithm reads debug data; 
 when index is between h-k, the algorithm reads unknown data.
@@ -12,7 +10,7 @@ when index is between h-k, the algorithm reads unknown data.
 File description:
 
 1. matrix.h, matrix.cpp:
-With Eigen library #citation needed, define the matrix object and implemente several calculations
+With Eigen library (see the link in the end) needed, define the matrix object and implemente several calculations
 
 2. rotation.h, rotation.cpp
 Encapsulate the rotation information and error in matrix or angular/axis form.
@@ -31,4 +29,16 @@ Implemente methods for reading data from 4 types of file. Define f_data struct t
 
 7. main.cpp
 Produce runable file to calculate the C_i and perform pivot calibration.
+
+
+
+Reference
+1. Eigen library:
+https://eigen.tuxfamily.org/index.php?title=Main_Page
+2. In registration.cpp (line 56), we referred to http://math.stackexchange.com/questions/99299/best-fitting-plane-given-a-set-of-points
+to perform SVD.
+3. In registration.cpp (line 71), we referred http://www.info.hiroshima-cu.ac.jp/~miyazaki/knowledge/teche0062.html
+to orthogonalize the result of SVD M to R.
+
+
 

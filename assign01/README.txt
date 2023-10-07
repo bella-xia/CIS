@@ -2,6 +2,12 @@ TODO:
 1. citation
 2. change the absolute file pathway to relative
 
+Excutable: cis
+Instruction: 
+To run the rebug or unknown data provided, type:
+    ./cis index
+where index is a to k. When index is between a-g, the algorithm reads debug data; 
+when index is between h-k, the algorithm reads unknown data.
 
 File description:
 
@@ -25,3 +31,4 @@ Implemente methods for reading data from 4 types of file. Define f_data struct t
 
 7. main.cpp
 Produce runable file to calculate the C_i and perform pivot calibration.
+

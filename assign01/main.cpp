@@ -5,14 +5,30 @@
 int main(int argc, char **argv)
 {
 
-    int idx = 0;
+    std::string idx = "";
     if (argc > 1)
     {
-        idx = std::stoi(argv[1]);
+        idx = argv[1];
     }
     // initialize all file name components
+    std::string path_name = "";
+    std::string answer_path_name = "";
     std::vector<std::string> debugs{"a", "b", "c", "d", "e", "f", "g"};
-    std::string path_name = "PA1 Student Data/pa1-debug-";
+    std::string debug_path_name = "PA1 Student Data/pa1-debug-";
+    std::string debug_answer_path_name = "PA1 Student Answer/pa1-debug-";
+    std::string unknown_answer_path_name = "PA1 Student Answer/pa1-unknown-";
+    std::string unknown_path_name = "PA1 Student Data/pa1-unknown-";
+    if (idx.compare("h") < 0 && !(idx.compare("a") < 0)) {
+        path_name = debug_path_name;
+        answer_path_name = debug_answer_path_name;
+        
+    } else if(idx.compare("g") > 0 && idx.compare("l") < 0) {
+        path_name = unknown_path_name;
+        answer_path_name = unknown_answer_path_name;
+    } else {
+        std::cout<<"invalid file name."<<std::endl;
+        return 1;
+    }
     std::string calbody_str = "-calbody.txt";
     std::string calreadings_str = "-calreadings.txt";
     std::string empivot_str = "-empivot.txt";
@@ -25,11 +41,11 @@ int main(int argc, char **argv)
     std::vector<std::vector<float>> data_a;
     std::vector<std::vector<float>> data_c;
     std::vector<Matrix> c_mat;
-    read_calbody(path_name + debugs[idx] + calbody_str, data_d, data_a, data_c);
+    read_calbody(path_name + idx + calbody_str, data_d, data_a, data_c);
 
     // calreadings
     std::vector<f_data> calreadings_frames;
-    read_calreadings(path_name + debugs[idx] + calreadings_str, calreadings_frames);
+    read_calreadings(path_name + idx + calreadings_str, calreadings_frames);
 
     std::vector<Frame> fa_frames;
     std::vector<Frame> fd_frames;
@@ -37,11 +53,11 @@ int main(int argc, char **argv)
 
     // empivot
     std::vector<f_data> em_frames;
-    read_empivot(path_name + debugs[idx] + empivot_str, em_frames);
+    read_empivot(path_name + idx + empivot_str, em_frames);
 
     // optpivot
     std::vector<f_data> opt_frames;
-    read_optpivot(path_name + debugs[idx] + optpivot_str, opt_frames);
+    read_optpivot(path_name + idx + optpivot_str, opt_frames);
 
     // create F_A and F_D registration
     Registration fa_reg = Registration();
@@ -105,7 +121,7 @@ int main(int argc, char **argv)
     }
     Matrix p_ts = fg_reg.pivot_calibration(fg_frames);
 
-    std::string output_filename = "PA1 Student Answer/pa1-debug-" + debugs[idx] + "-output.txt";
+    std::string output_filename = answer_path_name + idx + "-output.txt";
     std::ofstream out_file(output_filename);
     if (out_file.is_open())
     {

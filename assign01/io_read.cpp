@@ -26,7 +26,6 @@ void read_calreadings(std::string file_name, std::vector<f_data> &frames)
     char garbage;
     std::getline(in_file, in_line);
     std::stringstream(in_line) >> n_d >> garbage >> n_a >> garbage >> n_c >> garbage >> n_f;
-    std::cout << n_d << n_a << n_c << n_f;
     for (int i = 0; i < n_f; i++)
     {
         f_data frame;

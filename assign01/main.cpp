@@ -3,7 +3,7 @@
 #include "io_read.h"
 #include <algorithm>
 #include <random>
-#include <chrono>  
+#include <chrono>
 
 int main(int argc, char **argv)
 {
@@ -16,7 +16,6 @@ int main(int argc, char **argv)
     // initialize all file name components
     std::string path_name = "";
     std::string answer_path_name = "";
-    std::vector<std::string> debugs{"a", "b", "c", "d", "e", "f", "g"};
     std::string debug_path_name = "PA1 Student Data/pa1-debug-";
     std::string debug_answer_path_name = "PA1 Student Answer/pa1-debug-";
     std::string unknown_answer_path_name = "PA1 Student Answer/pa1-unknown-";
@@ -61,8 +60,8 @@ int main(int argc, char **argv)
     // empivot
     std::vector<f_data> em_frames;
     read_empivot(path_name + idx + empivot_str, em_frames);
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count(); 
-    auto rng = std::default_random_engine {seed};
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    auto rng = std::default_random_engine{seed};
     std::shuffle(std::begin(em_frames), std::end(em_frames), rng);
     // optpivot
     std::vector<f_data> opt_frames;
@@ -115,7 +114,7 @@ int main(int argc, char **argv)
     Registration fg_reg = Registration();
     std::vector<Frame> fg_frames = std::vector<Frame>();
     // pass in G vectors, find f_g frames
-    for (int frame_num = (int)em_frames.size() - 1; frame_num >=0; --frame_num)
+    for (int frame_num = (int)em_frames.size() - 1; frame_num >= 0; --frame_num)
     {
         for (int i = 0; i < (int)em_frames[frame_num].data_g.size(); ++i)
         {
@@ -140,7 +139,7 @@ int main(int argc, char **argv)
         fd_reg_2.add_matrix_a(Matrix(data_d[i]));
     }
 
-    for (int frame_num = (int)opt_frames.size() - 1; frame_num >=0; --frame_num)
+    for (int frame_num = (int)opt_frames.size() - 1; frame_num >= 0; --frame_num)
     {
         // calculate F_d
         for (int i = 0; i < (int)opt_frames[frame_num].data_d.size(); i++)

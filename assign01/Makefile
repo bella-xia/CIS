@@ -49,7 +49,7 @@ cis : $(CXX_OBJS)
 	$(CXX) -o $@ $(CXX_OBJS)
 
 clean :
-	rm -f *.o matrix frame regis cis io err depend.mak
+	rm -f *.o matrix frame regis cis cal io err depend.mak
 
 depend :
 	$(CXX) $(CXXFLAGS) -M $(CXX_SRCS) >> depend.mak

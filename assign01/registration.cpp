@@ -1,5 +1,9 @@
 #include "registration.h"
 
+/**
+ * Calculate the midpoints of the matrix set a.
+ * Store the midpoint calculated in mid_a.
+*/
 void Registration::calculate_midpoint_a()
 {
     Eigen::MatrixXd sum_mat_a(3, 1);
@@ -14,6 +18,10 @@ void Registration::calculate_midpoint_a()
     a_mid_calculated = true;
 }
 
+/**
+ * Calculate the midpoints of the matrix set b.
+ * Store the midpoint calculated in mid_b.
+*/
 void Registration::calculate_midpoint_b()
 {
     Eigen::MatrixXd sum_mat_b(3, 1);
@@ -27,6 +35,10 @@ void Registration::calculate_midpoint_b()
     mid_b = sum_mat_b / size_b;
 }
 
+/**
+ * Calculate a set of matrix a by a set of matrix b,
+ * where a is at the frame which origins at the midpoint of b.
+*/
 void Registration::get_matrix_a_from_b()
 {
     calculate_midpoint_b();
@@ -41,6 +53,10 @@ void Registration::get_matrix_a_from_b()
     a_mid_calculated = true;
 }
 
+/**
+ * perform point cloud registration.
+ * Find the frame transformation Fab such that Fab * b = a.
+*/
 Frame Registration::point_cloud_registration()
 {
     // copy coordinates to  matrix in Eigen format

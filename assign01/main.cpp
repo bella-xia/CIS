@@ -137,12 +137,12 @@ int main(int argc, char **argv)
     for (int frame_num = 0; frame_num < (int)opt_frames.size(); ++frame_num)
     {
         // calculate F_d
-        for (int i = 0; i < opt_frames[frame_num].data_d.size(); i++)
+        for (int i = 0; i < (int)opt_frames[frame_num].data_d.size(); i++)
         {
             fd_reg_2.add_matrix_b(Matrix(opt_frames[frame_num].data_d[i]));
         }
         Frame fd_2 = fd_reg_2.point_cloud_registration();
-        for (int i = 0; i < opt_frames[frame_num].data_h.size(); i++)
+        for (int i = 0; i < (int)opt_frames[frame_num].data_h.size(); i++)
         {
             fh_reg.add_matrix_b(Matrix(opt_frames[frame_num].data_h[i]));
         }

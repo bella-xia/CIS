@@ -1,6 +1,9 @@
 #include <iostream>
 #include "registration.h"
 #include "io_read.h"
+#include <algorithm>
+#include <random>
+#include <chrono>  
 
 int main(int argc, char **argv)
 {
@@ -58,10 +61,13 @@ int main(int argc, char **argv)
     // empivot
     std::vector<f_data> em_frames;
     read_empivot(path_name + idx + empivot_str, em_frames);
-
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count(); 
+    auto rng = std::default_random_engine {seed};
+    std::shuffle(std::begin(em_frames), std::end(em_frames), rng);
     // optpivot
     std::vector<f_data> opt_frames;
     read_optpivot(path_name + idx + optpivot_str, opt_frames);
+    std::shuffle(std::begin(opt_frames), std::end(opt_frames), rng);
 
     // create F_A and F_D registration
     Registration fa_reg = Registration();
@@ -109,13 +115,13 @@ int main(int argc, char **argv)
     Registration fg_reg = Registration();
     std::vector<Frame> fg_frames = std::vector<Frame>();
     // pass in G vectors, find f_g frames
-    for (int frame_num = 0; frame_num < (int)em_frames.size(); ++frame_num)
+    for (int frame_num = (int)em_frames.size() - 1; frame_num >=0; --frame_num)
     {
         for (int i = 0; i < (int)em_frames[frame_num].data_g.size(); ++i)
         {
             fg_reg.add_matrix_b(Matrix(em_frames[frame_num].data_g[i]));
         }
-        if (frame_num == 0)
+        if (frame_num == (int)em_frames.size() - 1)
         {
             fg_reg.get_matrix_a_from_b();
         }
@@ -134,7 +140,7 @@ int main(int argc, char **argv)
         fd_reg_2.add_matrix_a(Matrix(data_d[i]));
     }
 
-    for (int frame_num = 0; frame_num < (int)opt_frames.size(); ++frame_num)
+    for (int frame_num = (int)opt_frames.size() - 1; frame_num >=0; --frame_num)
     {
         // calculate F_d
         for (int i = 0; i < (int)opt_frames[frame_num].data_d.size(); i++)
@@ -146,7 +152,7 @@ int main(int argc, char **argv)
         {
             fh_reg.add_matrix_b(Matrix(opt_frames[frame_num].data_h[i]));
         }
-        if (frame_num == 0)
+        if (frame_num == (int)opt_frames.size() - 1)
         {
             fh_reg.get_matrix_a_from_b();
         }

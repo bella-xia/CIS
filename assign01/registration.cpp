@@ -46,6 +46,9 @@ Frame Registration::point_cloud_registration()
     for (int j = 0; j < size_b; ++j)
         coord_b.col(j) = eigens_b[j].get().col(0);
 
+    std::cout << coord_a << std::endl;
+    std::cout << coord_b << std::endl;
+
     calculate_midpoint_a();
     calculate_midpoint_b();
 
@@ -67,9 +70,9 @@ Frame Registration::point_cloud_registration()
     Eigen::MatrixXf m_t = svd_1.solve(coord_b.transpose());
     Matrix m = Matrix(m_t.transpose());
     auto svd_2 = m.get().jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV);
-    
-    // we refered to http://www.info.hiroshima-cu.ac.jp/~miyazaki/knowledge/teche0062.html to orthogonalize 
-    // result of SVD to r. 
+
+    // we refered to http://www.info.hiroshima-cu.ac.jp/~miyazaki/knowledge/teche0062.html to orthogonalize
+    // result of SVD to r.
     Eigen::MatrixXf r = svd_2.matrixU() * svd_2.matrixV().transpose();
     Eigen::MatrixXf p = mid_b - r * mid_a;
 
@@ -82,6 +85,7 @@ Matrix Registration::pivot_calibration(const std::vector<Frame> &f)
     Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> rot_mat(3 * length, 6);
     Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> pos_mat(3 * length, 1);
     pass_matrix(rot_mat, pos_mat, f);
+    auto svd = rot_mat.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV);
     Matrix p_ts = Matrix(rot_mat.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(pos_mat));
     return p_ts;
 }

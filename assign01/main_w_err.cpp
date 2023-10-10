@@ -109,7 +109,6 @@ int main(int argc, char **argv)
     Registration fg_reg = Registration();
     std::vector<Frame> fg_frames = std::vector<Frame>();
     // pass in G vectors, find f_g frames
-    std::cout << "G" << std::endl;
     for (int frame_num = 0; frame_num < (int)em_frames.size(); ++frame_num)
     {
         for (int i = 0; i < (int)em_frames[frame_num].data_g.size(); ++i)
@@ -121,8 +120,6 @@ int main(int argc, char **argv)
             fg_reg.get_matrix_a_from_b();
         }
         Frame fg = fg_reg.point_cloud_registration();
-        std::cout << " " << std::endl;
-        std::cout << " " << std::endl;
         fg_frames.push_back(fg);
         fg_reg.clean_matrix_b();
     }

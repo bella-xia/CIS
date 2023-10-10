@@ -32,6 +32,7 @@ public:
     Position get_pos() const { return pos; }
 
     Matrix operator*(const Matrix &mat) const;
+    Frame operator*(const Frame &f) const;
     Frame inverse() const;
 };
 

@@ -10,6 +10,9 @@ CXX_FRAME_OBJS = $(CXX_FRAME_SRCS:%.cpp=%.o)
 CXX_REGIS_SRCS = registration.cpp matrix.cpp rotation.cpp position.cpp frame.cpp _registration_test.cpp
 CXX_REGIS_OBJS = $(CXX_REGIS_SRCS:%.cpp=%.o)
 
+CXX_ERROR_SRCS = registration.cpp matrix.cpp rotation.cpp position.cpp frame.cpp _error_test.cpp
+CXX_ERROR_OBJS = $(CXX_ERROR_SRCS:%.cpp=%.o)
+
 CXX_IO_SRCS = io_read.cpp _io_test.cpp
 CXX_IO_OBJS = $(CXX_IO_SRCS:%.cpp=%.o)
 
@@ -33,11 +36,14 @@ regis:  $(CXX_REGIS_OBJS)
 io:  $(CXX_IO_OBJS)
 	$(CXX) -o $@ $(CXX_IO_OBJS)
 
+err:  $(CXX_ERROR_OBJS)
+	$(CXX) -o $@ $(CXX_ERROR_OBJS) 
+
 cis : $(CXX_OBJS)
 	$(CXX) -o $@ $(CXX_OBJS)
 
 clean :
-	rm -f *.o matrix frame regis cis io depend.mak
+	rm -f *.o matrix frame regis cis io err depend.mak
 
 depend :
 	$(CXX) $(CXXFLAGS) -M $(CXX_SRCS) >> depend.mak

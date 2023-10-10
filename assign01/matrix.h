@@ -30,7 +30,7 @@ public:
 
     Matrix operator+(const Matrix &other) const;
     Matrix operator*(const Matrix &other) const;
-    Matrix operator*(const int i) { return Matrix(mat * i); }
+    Matrix operator*(const float i) { return Matrix(mat * i); }
     Matrix transpose() const;
     Matrix inverse() const;
     Matrix skew() const;

@@ -11,7 +11,6 @@ class Matrix
 {
 
 private:
-    std::string name;
     Eigen::MatrixXd mat;
     int nrow;
     int ncol;
@@ -20,7 +19,7 @@ public:
     Matrix();
     Matrix(int dim);
     Matrix(int nrow, int ncol);
-    Matrix(Eigen::MatrixXd mat) : name("taylor"), mat(mat),
+    Matrix(Eigen::MatrixXd mat) : mat(mat),
                                   nrow(static_cast<int>(mat.rows())), ncol(static_cast<int>(mat.cols())) {}
     Matrix(float p0, float p1, float p2, float p3, float p4, float p5, float p6, float p7, float p8);
     Matrix(float p0, float p1, float p2);
@@ -39,7 +38,6 @@ public:
 
     void assign(int row, int col, float val) { mat(row, col) = val; }
 
-    std::string get_name() const { return name; }
     Eigen::MatrixXd get() const { return mat; }
     float get_pos(int row, int col) const { return mat(row, col); }
     int get_row() const { return nrow; }

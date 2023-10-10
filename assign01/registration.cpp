@@ -11,6 +11,7 @@ void Registration::calculate_midpoint_a()
         sum_mat_a += eigens_a[i].get();
     }
     mid_a = sum_mat_a / size_a;
+    a_mid_calculated = true;
 }
 
 void Registration::calculate_midpoint_b()
@@ -34,6 +35,10 @@ void Registration::get_matrix_a_from_b()
     {
         add_matrix_a(eigens_b[i] + neg_mid_b_mat);
     }
+    mid_a << 0,
+        0,
+        0;
+    a_mid_calculated = true;
 }
 
 Frame Registration::point_cloud_registration()
@@ -46,7 +51,10 @@ Frame Registration::point_cloud_registration()
     for (int j = 0; j < size_b; ++j)
         coord_b.col(j) = eigens_b[j].get().col(0);
 
-    calculate_midpoint_a();
+    if (!a_mid_calculated)
+    {
+        calculate_midpoint_a();
+    }
     calculate_midpoint_b();
 
     // subtract centroid

@@ -10,10 +10,12 @@ private:
     std::vector<Matrix> eigens_a, eigens_b;
     int size_a, size_b;
     Eigen::MatrixXd mid_a, mid_b;
+    bool a_mid_calculated;
 
 public:
     Registration() : eigens_a(std::vector<Matrix>()), eigens_b(std::vector<Matrix>()),
-                     size_a(0), size_b(0), mid_a(Eigen::MatrixXd(3, 1)), mid_b(Eigen::MatrixXd(3, 1)){};
+                     size_a(0), size_b(0), mid_a(Eigen::MatrixXd(3, 1)), mid_b(Eigen::MatrixXd(3, 1)),
+                     a_mid_calculated(false){};
     void add_matrix_a(Matrix eigen)
     {
         eigens_a.push_back(eigen);
@@ -33,6 +35,7 @@ public:
     {
         eigens_a.clear();
         size_a = 0;
+        a_mid_calculated = false;
     }
 
     void calculate_midpoint_a();

@@ -1,6 +1,6 @@
 #include "matrix.h"
 
-Matrix::Matrix(int nrow, int ncol) : name("hisashi"), nrow(nrow), ncol(ncol)
+Matrix::Matrix(int nrow, int ncol) : nrow(nrow), ncol(ncol)
 {
     mat = Eigen::MatrixXd::Zero(nrow, ncol);
 }
@@ -17,14 +17,14 @@ Matrix::Matrix(int dim) : Matrix(dim, dim)
     }
 }
 
-Matrix::Matrix(float p0, float p1, float p2, float p3, float p4, float p5, float p6, float p7, float p8) : name("taylor"), nrow(3), ncol(3)
+Matrix::Matrix(float p0, float p1, float p2, float p3, float p4, float p5, float p6, float p7, float p8) : nrow(3), ncol(3)
 {
     mat = Eigen::MatrixXd(nrow, ncol);
     mat << p0, p1, p2,
         p3, p4, p5,
         p6, p7, p8;
 }
-Matrix::Matrix(float p0, float p1, float p2) : name("taylor"), nrow(3), ncol(1)
+Matrix::Matrix(float p0, float p1, float p2) : nrow(3), ncol(1)
 {
     mat = Eigen::MatrixXd(nrow, ncol);
     mat << p0,
@@ -78,7 +78,7 @@ Matrix Matrix::inverse() const
 
 std::string Matrix::as_str() const
 {
-    std::string mat_str = name + "\n";
+    std::string mat_str = "";
     for (int i = 0; i < nrow; i++)
     {
         for (int j = 0; j < ncol; j++)

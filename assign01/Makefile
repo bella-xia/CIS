@@ -13,8 +13,11 @@ CXX_REGIS_OBJS = $(CXX_REGIS_SRCS:%.cpp=%.o)
 CXX_ERROR_SRCS = registration.cpp matrix.cpp rotation.cpp position.cpp frame.cpp _error_test.cpp
 CXX_ERROR_OBJS = $(CXX_ERROR_SRCS:%.cpp=%.o)
 
-CXX_CAL_SRCS = registration.cpp matrix.cpp rotation.cpp position.cpp frame.cpp _calibration_test.cpp
-CXX_CAL_OBJS = $(CXX_CAL_SRCS:%.cpp=%.o)
+CXX_CALONE_SRCS = registration.cpp matrix.cpp rotation.cpp position.cpp frame.cpp _calibration_test_1.cpp
+CXX_CALONE_OBJS = $(CXX_CALONE_SRCS:%.cpp=%.o)
+
+CXX_CALTWO_SRCS = registration.cpp matrix.cpp rotation.cpp position.cpp frame.cpp _calibration_test_2.cpp
+CXX_CALTWO_OBJS = $(CXX_CALTWO_SRCS:%.cpp=%.o)
 
 CXX_IO_SRCS = io_read.cpp _io_test.cpp
 CXX_IO_OBJS = $(CXX_IO_SRCS:%.cpp=%.o)
@@ -39,8 +42,11 @@ regis:  $(CXX_REGIS_OBJS)
 io:  $(CXX_IO_OBJS)
 	$(CXX) -o $@ $(CXX_IO_OBJS)
 
-cal:  $(CXX_CAL_OBJS)
-	$(CXX) -o $@ $(CXX_CAL_OBJS)
+calone:  $(CXX_CALONE_OBJS)
+	$(CXX) -o $@ $(CXX_CALONE_OBJS)
+
+caltwo:  $(CXX_CALTWO_OBJS)
+	$(CXX) -o $@ $(CXX_CALTWO_OBJS)
 
 err:  $(CXX_ERROR_OBJS)
 	$(CXX) -o $@ $(CXX_ERROR_OBJS) 
@@ -49,7 +55,7 @@ cis : $(CXX_OBJS)
 	$(CXX) -o $@ $(CXX_OBJS)
 
 clean :
-	rm -f *.o matrix frame regis cis cal io err depend.mak
+	rm -f *.o matrix frame regis cis calone caltwo io err depend.mak
 
 depend :
 	$(CXX) $(CXXFLAGS) -M $(CXX_SRCS) >> depend.mak

@@ -64,7 +64,8 @@
     "sstream": "cpp",
     "stop_token": "cpp",
     "thread": "cpp",
-    "valarray": "cpp"
+    "valarray": "cpp",
+    "*.main": "cpp"
   },
   "cmake.sourceDirectory": "/home/bella-xia/CIS/assign01/eigen-3.4.0/bench/btl/libs/eigen3"
 }

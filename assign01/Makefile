@@ -13,6 +13,9 @@ CXX_REGIS_OBJS = $(CXX_REGIS_SRCS:%.cpp=%.o)
 CXX_ERROR_SRCS = registration.cpp matrix.cpp rotation.cpp position.cpp frame.cpp _error_test.cpp
 CXX_ERROR_OBJS = $(CXX_ERROR_SRCS:%.cpp=%.o)
 
+CXX_CAL_SRCS = registration.cpp matrix.cpp rotation.cpp position.cpp frame.cpp _calibration_test.cpp
+CXX_CAL_OBJS = $(CXX_CAL_SRCS:%.cpp=%.o)
+
 CXX_IO_SRCS = io_read.cpp _io_test.cpp
 CXX_IO_OBJS = $(CXX_IO_SRCS:%.cpp=%.o)
 
@@ -35,6 +38,9 @@ regis:  $(CXX_REGIS_OBJS)
 
 io:  $(CXX_IO_OBJS)
 	$(CXX) -o $@ $(CXX_IO_OBJS)
+
+cal:  $(CXX_CAL_OBJS)
+	$(CXX) -o $@ $(CXX_CAL_OBJS)
 
 err:  $(CXX_ERROR_OBJS)
 	$(CXX) -o $@ $(CXX_ERROR_OBJS) 

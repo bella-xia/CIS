@@ -1,3 +1,4 @@
+
 NAME: Bella Xia and Hanbei Zhou
 
 Excutable: cis
@@ -6,6 +7,10 @@ To run the excutable on rebug or unknown data provided, type the following line 
     ./cis index
 where index is a to k. When index is between a-g, the algorithm reads debug data; 
 when index is between h-k, the algorithm reads unknown data.
+
+To run the excutable on other source files, type the following line in terminal:
+    ./cis other
+the program will then prompt you to enter the source file names.
 
 File description:
 
@@ -39,6 +44,3 @@ https://eigen.tuxfamily.org/index.php?title=Main_Page
 to perform SVD.
 3. In registration.cpp (line 71), we referred http://www.info.hiroshima-cu.ac.jp/~miyazaki/knowledge/teche0062.html
 to orthogonalize the result of SVD M to R.
-
-
-

@@ -3,69 +3,90 @@
 #include "io_read.h"
 #include <algorithm>
 #include <random>
-#include <chrono>
+#include <chrono>  
 
 int main(int argc, char **argv)
 {
-
+#
     std::string idx = "";
     if (argc > 1)
     {
         idx = argv[1];
     }
-    // initialize all file name components
-    std::string path_name = "";
-    std::string answer_path_name = "";
-    std::string debug_path_name = "PA1 Student Data/pa1-debug-";
-    std::string debug_answer_path_name = "PA1 Student Answer/pa1-debug-";
-    std::string unknown_answer_path_name = "PA1 Student Answer/pa1-unknown-";
-    std::string unknown_path_name = "PA1 Student Data/pa1-unknown-";
-    if (idx.compare("h") < 0 && !(idx.compare("a") < 0))
-    {
-        path_name = debug_path_name;
-        answer_path_name = debug_answer_path_name;
-    }
-    else if (idx.compare("g") > 0 && idx.compare("l") < 0)
-    {
-        path_name = unknown_path_name;
-        answer_path_name = unknown_answer_path_name;
-    }
-    else
-    {
-        std::cout << "invalid file name." << std::endl;
-        return 1;
-    }
-    std::string calbody_str = "-calbody.txt";
-    std::string calreadings_str = "-calreadings.txt";
-    std::string empivot_str = "-empivot.txt";
-    std::string optpivot_str = "-optpivot.txt";
-
-    // step 1 : read files
-
+    // preparing data storage
     // calbody
     std::vector<std::vector<float>> data_d;
     std::vector<std::vector<float>> data_a;
     std::vector<std::vector<float>> data_c;
     std::vector<Matrix> c_mat;
-    read_calbody(path_name + idx + calbody_str, data_d, data_a, data_c);
-
-    // calreadings
+    //calreading
     std::vector<f_data> calreadings_frames;
-    read_calreadings(path_name + idx + calreadings_str, calreadings_frames);
-
-    std::vector<Frame> fa_frames;
-    std::vector<Frame> fd_frames;
-    std::vector<std::vector<Matrix>> C_mat;
-
-    // empivot
+    //EM pivot calibration
     std::vector<f_data> em_frames;
-    read_empivot(path_name + idx + empivot_str, em_frames);
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    auto rng = std::default_random_engine{seed};
-    std::shuffle(std::begin(em_frames), std::end(em_frames), rng);
-    // optpivot
+    //optical pivot calibration
     std::vector<f_data> opt_frames;
-    read_optpivot(path_name + idx + optpivot_str, opt_frames);
+    std::string answer_path_name;
+    //designate file pathway
+    if (idx.compare("other") == 0) {
+        std::string calbody_string;
+        std::string calreading_string;
+        std::string empivot_string;
+        std::string optpivot_string;
+        std::cout<<"Please enter calbody file name:" <<std::endl;
+        std::cin>>calbody_string;
+        std::cout<<"Please enter calreading file name:" <<std::endl;
+        std::cin>>calreading_string;
+        std::cout<<"Please enter empivot file name:" <<std::endl;
+        std::cin>>empivot_string;
+        std::cout<<"Please enter optpivot file name:" <<std::endl;
+        std::cin>>optpivot_string;
+        std::cout<<"Please enter answer file name:" <<std::endl;
+        std::cin>>answer_path_name;
+
+        read_calbody(calbody_string, data_d, data_a, data_c);
+        read_calreadings(calreading_string, calreadings_frames);
+        read_empivot(empivot_string, em_frames);
+        read_optpivot(optpivot_string, opt_frames);
+
+        } else {
+        // initialize all file name components
+        std::string path_name = "";
+        std::vector<std::string> debugs{"a", "b", "c", "d", "e", "f", "g"};
+        std::string debug_path_name = "PA1 Student Data/pa1-debug-";
+        std::string debug_answer_path_name = "PA1 Student Answer/pa1-debug-";
+        std::string unknown_answer_path_name = "PA1 Student Answer/pa1-unknown-";
+        std::string unknown_path_name = "PA1 Student Data/pa1-unknown-";
+        if (idx.compare("h") < 0 && !(idx.compare("a") < 0))
+        {
+            path_name = debug_path_name;
+            answer_path_name = debug_answer_path_name;
+        }
+        else if (idx.compare("g") > 0 && idx.compare("l") < 0)
+        {
+            path_name = unknown_path_name;
+            answer_path_name = unknown_answer_path_name;
+        }
+        else
+        {
+            std::cout << "invalid file name." << std::endl;
+            return 1;
+        }
+        std::string calbody_str = "-calbody.txt";
+        std::string calreadings_str = "-calreadings.txt";
+        std::string empivot_str = "-empivot.txt";
+        std::string optpivot_str = "-optpivot.txt";
+
+        // step 1 : read files
+        read_calbody(path_name + idx + calbody_str, data_d, data_a, data_c);
+        read_calreadings(path_name + idx + calreadings_str, calreadings_frames);
+        read_empivot(path_name + idx + empivot_str, em_frames);
+        read_optpivot(path_name + idx + optpivot_str, opt_frames);
+    }
+    //randomize the sequence of the readings so that the origin of the pivot
+    //reference frame is randomized.
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count(); 
+    auto rng = std::default_random_engine {seed};
+    std::shuffle(std::begin(em_frames), std::end(em_frames), rng);
     std::shuffle(std::begin(opt_frames), std::end(opt_frames), rng);
 
     // create F_A and F_D registration
@@ -87,6 +108,9 @@ int main(int argc, char **argv)
         c_mat.push_back(Matrix(data_c[i]));
     }
 
+    std::vector<Frame> fa_frames;
+    std::vector<Frame> fd_frames;
+    std::vector<std::vector<Matrix>> C_mat;
     // pass in A and D vectors
     for (int frame_num = 0; frame_num < (int)calreadings_frames.size(); ++frame_num)
     {
@@ -114,7 +138,7 @@ int main(int argc, char **argv)
     Registration fg_reg = Registration();
     std::vector<Frame> fg_frames = std::vector<Frame>();
     // pass in G vectors, find f_g frames
-    for (int frame_num = (int)em_frames.size() - 1; frame_num >= 0; --frame_num)
+    for (int frame_num = (int)em_frames.size() - 1; frame_num >=0; --frame_num)
     {
         for (int i = 0; i < (int)em_frames[frame_num].data_g.size(); ++i)
         {
@@ -139,7 +163,7 @@ int main(int argc, char **argv)
         fd_reg_2.add_matrix_a(Matrix(data_d[i]));
     }
 
-    for (int frame_num = (int)opt_frames.size() - 1; frame_num >= 0; --frame_num)
+    for (int frame_num = (int)opt_frames.size() - 1; frame_num >=0; --frame_num)
     {
         // calculate F_d
         for (int i = 0; i < (int)opt_frames[frame_num].data_d.size(); i++)

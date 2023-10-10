@@ -2,7 +2,7 @@
 
 void Registration::calculate_midpoint_a()
 {
-    Eigen::MatrixXf sum_mat_a(3, 1);
+    Eigen::MatrixXd sum_mat_a(3, 1);
     sum_mat_a << 0,
         0,
         0;
@@ -15,7 +15,7 @@ void Registration::calculate_midpoint_a()
 
 void Registration::calculate_midpoint_b()
 {
-    Eigen::MatrixXf sum_mat_b(3, 1);
+    Eigen::MatrixXd sum_mat_b(3, 1);
     sum_mat_b << 0,
         0,
         0;
@@ -39,21 +39,15 @@ void Registration::get_matrix_a_from_b()
 Frame Registration::point_cloud_registration()
 {
     // copy coordinates to  matrix in Eigen format
-    Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> coord_a(3, size_a);
-    Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> coord_b(3, size_b);
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> coord_a(3, size_a);
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> coord_b(3, size_b);
     for (int i = 0; i < size_a; ++i)
         coord_a.col(i) = eigens_a[i].get().col(0);
     for (int j = 0; j < size_b; ++j)
         coord_b.col(j) = eigens_b[j].get().col(0);
 
-    std::cout << coord_a << std::endl;
-    std::cout << coord_b << std::endl;
-
     calculate_midpoint_a();
     calculate_midpoint_b();
-
-    // calculate centroid
-    // Eigen::MatrixXf centroid(coord.row(0).mean(), coord.row(1).mean(), coord.row(2).mean());
 
     // subtract centroid
     coord_a.row(0).array() -= mid_a(0, 0);
@@ -67,14 +61,14 @@ Frame Registration::point_cloud_registration()
     // we only need the left-singular matrix here
     //  http://math.stackexchange.com/questions/99299/best-fitting-plane-given-a-set-of-points
     auto svd_1 = (coord_a.transpose()).jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV);
-    Eigen::MatrixXf m_t = svd_1.solve(coord_b.transpose());
+    Eigen::MatrixXd m_t = svd_1.solve(coord_b.transpose());
     Matrix m = Matrix(m_t.transpose());
     auto svd_2 = m.get().jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV);
 
     // we refered to http://www.info.hiroshima-cu.ac.jp/~miyazaki/knowledge/teche0062.html to orthogonalize
     // result of SVD to r.
-    Eigen::MatrixXf r = svd_2.matrixU() * svd_2.matrixV().transpose();
-    Eigen::MatrixXf p = mid_b - r * mid_a;
+    Eigen::MatrixXd r = svd_2.matrixU() * svd_2.matrixV().transpose();
+    Eigen::MatrixXd p = mid_b - r * mid_a;
 
     return Frame(Rotation(r), Position(p));
 }
@@ -82,15 +76,14 @@ Frame Registration::point_cloud_registration()
 Matrix Registration::pivot_calibration(const std::vector<Frame> &f)
 {
     int length = f.size();
-    Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> rot_mat(3 * length, 6);
-    Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> pos_mat(3 * length, 1);
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> rot_mat(3 * length, 6);
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> pos_mat(3 * length, 1);
     pass_matrix(rot_mat, pos_mat, f);
-    auto svd = rot_mat.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV);
     Matrix p_ts = Matrix(rot_mat.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(pos_mat));
     return p_ts;
 }
 
-void Registration::pass_matrix(Eigen::MatrixXf &rot_mat, Eigen::MatrixXf &pos_mat, const std::vector<Frame> &f)
+void Registration::pass_matrix(Eigen::MatrixXd &rot_mat, Eigen::MatrixXd &pos_mat, const std::vector<Frame> &f)
 {
     int length = f.size();
     for (int i = 0; i < length; ++i)

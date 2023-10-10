@@ -9,11 +9,11 @@ class Registration
 private:
     std::vector<Matrix> eigens_a, eigens_b;
     int size_a, size_b;
-    Eigen::MatrixXf mid_a, mid_b;
+    Eigen::MatrixXd mid_a, mid_b;
 
 public:
     Registration() : eigens_a(std::vector<Matrix>()), eigens_b(std::vector<Matrix>()),
-                     size_a(0), size_b(0), mid_a(Eigen::MatrixXf(3, 1)), mid_b(Eigen::MatrixXf(3, 1)){};
+                     size_a(0), size_b(0), mid_a(Eigen::MatrixXd(3, 1)), mid_b(Eigen::MatrixXd(3, 1)){};
     void add_matrix_a(Matrix eigen)
     {
         eigens_a.push_back(eigen);
@@ -42,7 +42,7 @@ public:
     Matrix get_midpoint_b() { return Matrix(mid_b); }
     Frame point_cloud_registration();
     Matrix pivot_calibration(const std::vector<Frame> &f);
-    void pass_matrix(Eigen::MatrixXf &rot_mat, Eigen::MatrixXf &pos_mat, const std::vector<Frame> &f);
+    void pass_matrix(Eigen::MatrixXd &rot_mat, Eigen::MatrixXd &pos_mat, const std::vector<Frame> &f);
 
 private:
 };

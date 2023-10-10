@@ -2,7 +2,7 @@
 
 Matrix::Matrix(int nrow, int ncol) : name("hisashi"), nrow(nrow), ncol(ncol)
 {
-    mat = Eigen::MatrixXf::Zero(nrow, ncol);
+    mat = Eigen::MatrixXd::Zero(nrow, ncol);
 }
 
 Matrix::Matrix() : Matrix(3, 3)
@@ -19,14 +19,14 @@ Matrix::Matrix(int dim) : Matrix(dim, dim)
 
 Matrix::Matrix(float p0, float p1, float p2, float p3, float p4, float p5, float p6, float p7, float p8) : name("taylor"), nrow(3), ncol(3)
 {
-    mat = Eigen::MatrixXf(nrow, ncol);
+    mat = Eigen::MatrixXd(nrow, ncol);
     mat << p0, p1, p2,
         p3, p4, p5,
         p6, p7, p8;
 }
 Matrix::Matrix(float p0, float p1, float p2) : name("taylor"), nrow(3), ncol(1)
 {
-    mat = Eigen::MatrixXf(nrow, ncol);
+    mat = Eigen::MatrixXd(nrow, ncol);
     mat << p0,
         p1,
         p2;

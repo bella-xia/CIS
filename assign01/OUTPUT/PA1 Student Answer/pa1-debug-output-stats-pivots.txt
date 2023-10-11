@@ -1,140 +1,140 @@
 dataset a: 
-EM pivot x:  calculated mean 198.316
-             error mean 0.656194
-             error standard deviation 4.7559
-EM pivot y:  calculated mean 190.016
-             error mean -3.6036
-             error standard deviation 5.16182
-EM pivot z:  calculated mean 209.566
-             error mean 3.13622
-             error standard deviation 3.27683
-Opt pivot x: calculated mean 410.415
-             error mean 1.89513
-             error standard deviation 5.27337
-Opt pivot y: calculated mean 402.864
-             error mean -3.01602
-             error standard deviation 6.44025
-Opt pivot z: calculated mean 194.013
-             error mean 3.01259
-             error standard deviation 3.1884
+EM pivot x:  calculated mean 198.194
+             error mean 0.533831
+             error standard deviation 3.91579
+EM pivot y:  calculated mean 190.694
+             error mean -2.92633
+             error standard deviation 4.31711
+EM pivot z:  calculated mean 209.81
+             error mean 3.38009
+             error standard deviation 3.1639
+Opt pivot x: calculated mean 409.591
+             error mean 1.07086
+             error standard deviation 4.9041
+Opt pivot y: calculated mean 404.335
+             error mean -1.54533
+             error standard deviation 6.84632
+Opt pivot z: calculated mean 193.799
+             error mean 2.79853
+             error standard deviation 3.62962
 
 dataset b: 
-EM pivot x:  calculated mean 194.379
-             error mean -3.76136
-             error standard deviation 3.27179
-EM pivot y:  calculated mean 189.566
-             error mean -4.94403
-             error standard deviation 7.07663
-EM pivot z:  calculated mean 197.475
-             error mean 1.88455
-             error standard deviation 3.78004
-Opt pivot x: calculated mean 391.188
-             error mean 1.01828
-             error standard deviation 4.52658
-Opt pivot y: calculated mean 401.744
-             error mean -4.95588
-             error standard deviation 4.33353
-Opt pivot z: calculated mean 191.226
-             error mean 0.845886
-             error standard deviation 3.09232
+EM pivot x:  calculated mean 194.362
+             error mean -3.77825
+             error standard deviation 3.44091
+EM pivot y:  calculated mean 188.948
+             error mean -5.56155
+             error standard deviation 6.6431
+EM pivot z:  calculated mean 198.179
+             error mean 2.58929
+             error standard deviation 3.69311
+Opt pivot x: calculated mean 391.446
+             error mean 1.27565
+             error standard deviation 4.68496
+Opt pivot y: calculated mean 402.56
+             error mean -4.14034
+             error standard deviation 3.76702
+Opt pivot z: calculated mean 190.83
+             error mean 0.449743
+             error standard deviation 2.71211
 
 dataset c: 
-EM pivot x:  calculated mean 205.038
-             error mean 4.07824
-             error standard deviation 4.67127
-EM pivot y:  calculated mean 191.89
-             error mean 1.38957
-             error standard deviation 8.17299
-EM pivot z:  calculated mean 194.18
-             error mean 0.329931
-             error standard deviation 5.77537
-Opt pivot x: calculated mean 411.037
-             error mean 5.29681
-             error standard deviation 4.14843
-Opt pivot y: calculated mean 398.439
-             error mean -8.19084
-             error standard deviation 6.14144
-Opt pivot z: calculated mean 196.35
-             error mean 0.139497
-             error standard deviation 4.57124
+EM pivot x:  calculated mean 206.247
+             error mean 5.28683
+             error standard deviation 5.3029
+EM pivot y:  calculated mean 189.771
+             error mean -0.728522
+             error standard deviation 9.64856
+EM pivot z:  calculated mean 195.361
+             error mean 1.51105
+             error standard deviation 4.80196
+Opt pivot x: calculated mean 410.601
+             error mean 4.86138
+             error standard deviation 4.23441
+Opt pivot y: calculated mean 399.655
+             error mean -6.97476
+             error standard deviation 5.00547
+Opt pivot z: calculated mean 196.558
+             error mean 0.348099
+             error standard deviation 3.96889
 
 dataset d: 
-EM pivot x:  calculated mean 200.582
-             error mean -1.20769
-             error standard deviation 2.24623
-EM pivot y:  calculated mean 192.905
-             error mean -6.00533
-             error standard deviation 2.29189
-EM pivot z:  calculated mean 204.164
-             error mean 3.97434
-             error standard deviation 4.84217
-Opt pivot x: calculated mean 382.561
-             error mean -8.72935
-             error standard deviation 5.01266
-Opt pivot y: calculated mean 392.047
-             error mean -5.00268
-             error standard deviation 5.24013
-Opt pivot z: calculated mean 198.174
-             error mean -8.93594
-             error standard deviation 4.46808
+EM pivot x:  calculated mean 199.964
+             error mean -1.82632
+             error standard deviation 2.15222
+EM pivot y:  calculated mean 192.652
+             error mean -6.2575
+             error standard deviation 2.39269
+EM pivot z:  calculated mean 205.272
+             error mean 5.08223
+             error standard deviation 5.26717
+Opt pivot x: calculated mean 383.505
+             error mean -7.78481
+             error standard deviation 4.58192
+Opt pivot y: calculated mean 391.049
+             error mean -6.00049
+             error standard deviation 4.77481
+Opt pivot z: calculated mean 198.881
+             error mean -8.22909
+             error standard deviation 3.70601
 
 dataset e: 
-EM pivot x:  calculated mean 186.068
-             error mean -9.75201
-             error standard deviation 5.12088
-EM pivot y:  calculated mean 175.242
-             error mean -17.8977
-             error standard deviation 8.14974
-EM pivot z:  calculated mean 200.347
-             error mean 2.09661
-             error standard deviation 5.68513
-Opt pivot x: calculated mean 396.202
-             error mean -3.84817
-             error standard deviation 4.51413
-Opt pivot y: calculated mean 393.096
-             error mean -6.22406
-             error standard deviation 4.71564
-Opt pivot z: calculated mean 185.341
-             error mean -4.94868
-             error standard deviation 3.89787
+EM pivot x:  calculated mean 185.189
+             error mean -10.6313
+             error standard deviation 5.45891
+EM pivot y:  calculated mean 175.879
+             error mean -17.2611
+             error standard deviation 8.06853
+EM pivot z:  calculated mean 199.166
+             error mean 0.915577
+             error standard deviation 4.88654
+Opt pivot x: calculated mean 396.03
+             error mean -4.0204
+             error standard deviation 4.22806
+Opt pivot y: calculated mean 393.975
+             error mean -5.34512
+             error standard deviation 5.04369
+Opt pivot z: calculated mean 185.16
+             error mean -5.12953
+             error standard deviation 3.49689
 
 dataset f: 
-EM pivot x:  calculated mean 190.539
-             error mean -5.24093
-             error standard deviation 4.64302
-EM pivot y:  calculated mean 220.141
-             error mean -0.509339
-             error standard deviation 6.74246
-EM pivot z:  calculated mean 192.108
-             error mean -4.47169
-             error standard deviation 3.89376
-Opt pivot x: calculated mean 403.966
-             error mean 2.53592
-             error standard deviation 2.8634
-Opt pivot y: calculated mean 396.63
-             error mean -5.16993
-             error standard deviation 5.1773
-Opt pivot z: calculated mean 193.482
-             error mean -3.66765
-             error standard deviation 3.47252
+EM pivot x:  calculated mean 191.062
+             error mean -4.71796
+             error standard deviation 4.91853
+EM pivot y:  calculated mean 220.812
+             error mean 0.161581
+             error standard deviation 6.91711
+EM pivot z:  calculated mean 192.052
+             error mean -4.52784
+             error standard deviation 3.87399
+Opt pivot x: calculated mean 404.264
+             error mean 2.83422
+             error standard deviation 2.91939
+Opt pivot y: calculated mean 395.782
+             error mean -6.01766
+             error standard deviation 5.46687
+Opt pivot z: calculated mean 193.622
+             error mean -3.52755
+             error standard deviation 3.59317
 
 dataset g: 
-EM pivot x:  calculated mean 207.798
-             error mean 8.28827
-             error standard deviation 7.29994
-EM pivot y:  calculated mean 198.238
-             error mean -0.771875
-             error standard deviation 4.97002
-EM pivot z:  calculated mean 209.949
-             error mean 3.96916
-             error standard deviation 5.06436
-Opt pivot x: calculated mean 399.673
-             error mean 1.23283
-             error standard deviation 4.80154
-Opt pivot y: calculated mean 390.748
-             error mean -4.07205
-             error standard deviation 5.91037
-Opt pivot z: calculated mean 190.677
-             error mean -1.24276
-             error standard deviation 4.94069
+EM pivot x:  calculated mean 207.822
+             error mean 8.312
+             error standard deviation 8.15497
+EM pivot y:  calculated mean 198.217
+             error mean -0.792683
+             error standard deviation 5.37294
+EM pivot z:  calculated mean 210.483
+             error mean 4.50336
+             error standard deviation 5.41553
+Opt pivot x: calculated mean 399.627
+             error mean 1.18716
+             error standard deviation 4.8216
+Opt pivot y: calculated mean 391.35
+             error mean -3.46999
+             error standard deviation 5.40433
+Opt pivot z: calculated mean 190.172
+             error mean -1.74785
+             error standard deviation 4.39423
 

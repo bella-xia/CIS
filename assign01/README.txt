@@ -4,6 +4,11 @@ NAME: Bella Xia and Hanbei Zhou
 Makefile shortcut: make / make cis
 Excutable: cis
 
+Library Imports:
+
+To be able to run our program, we would need to include Eigen library in the include path. The version that we used
+for our implementation is eigen-3.4.0
+
 Instruction: 
 To run the excutable on rebug or unknown data provided, type the following line in terminal:
     ./cis index

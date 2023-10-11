@@ -70,6 +70,6 @@ depend.mak :
 	touch $@
 
 solution.zip : 
-	zip -9r solution.zip *
+	zip -9r solution.zip *.cpp *.h Makefile README.txt PA1\ Student\ Answer PA1\ Student\ Answer\ pdfs PA1\ Student\ Data
 
 include depend.mak

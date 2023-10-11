@@ -1,0 +1,14 @@
+mean for dataset a: 9.55794e-05
+standard deviation for dataset a: 0.00291347
+mean for dataset b: 0.0136046
+standard deviation for dataset b: 0.281727
+mean for dataset c: -0.00995987
+standard deviation for dataset c: 0.253568
+mean for dataset d: 0.000169895
+standard deviation for dataset d: 0.00645516
+mean for dataset e: -0.0217519
+standard deviation for dataset e: 0.961466
+mean for dataset f: -0.0101492
+standard deviation for dataset f: 1.23296
+mean for dataset g: -0.0434486
+standard deviation for dataset g: 1.27144

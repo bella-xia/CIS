@@ -1,0 +1,140 @@
+dataset a: 
+EM pivot x:  calculated mean 198.316
+             error mean 0.656194
+             error standard deviation 4.7559
+EM pivot y:  calculated mean 190.016
+             error mean -3.6036
+             error standard deviation 5.16182
+EM pivot z:  calculated mean 209.566
+             error mean 3.13622
+             error standard deviation 3.27683
+Opt pivot x: calculated mean 410.415
+             error mean 1.89513
+             error standard deviation 5.27337
+Opt pivot y: calculated mean 402.864
+             error mean -3.01602
+             error standard deviation 6.44025
+Opt pivot z: calculated mean 194.013
+             error mean 3.01259
+             error standard deviation 3.1884
+
+dataset b: 
+EM pivot x:  calculated mean 194.379
+             error mean -3.76136
+             error standard deviation 3.27179
+EM pivot y:  calculated mean 189.566
+             error mean -4.94403
+             error standard deviation 7.07663
+EM pivot z:  calculated mean 197.475
+             error mean 1.88455
+             error standard deviation 3.78004
+Opt pivot x: calculated mean 391.188
+             error mean 1.01828
+             error standard deviation 4.52658
+Opt pivot y: calculated mean 401.744
+             error mean -4.95588
+             error standard deviation 4.33353
+Opt pivot z: calculated mean 191.226
+             error mean 0.845886
+             error standard deviation 3.09232
+
+dataset c: 
+EM pivot x:  calculated mean 205.038
+             error mean 4.07824
+             error standard deviation 4.67127
+EM pivot y:  calculated mean 191.89
+             error mean 1.38957
+             error standard deviation 8.17299
+EM pivot z:  calculated mean 194.18
+             error mean 0.329931
+             error standard deviation 5.77537
+Opt pivot x: calculated mean 411.037
+             error mean 5.29681
+             error standard deviation 4.14843
+Opt pivot y: calculated mean 398.439
+             error mean -8.19084
+             error standard deviation 6.14144
+Opt pivot z: calculated mean 196.35
+             error mean 0.139497
+             error standard deviation 4.57124
+
+dataset d: 
+EM pivot x:  calculated mean 200.582
+             error mean -1.20769
+             error standard deviation 2.24623
+EM pivot y:  calculated mean 192.905
+             error mean -6.00533
+             error standard deviation 2.29189
+EM pivot z:  calculated mean 204.164
+             error mean 3.97434
+             error standard deviation 4.84217
+Opt pivot x: calculated mean 382.561
+             error mean -8.72935
+             error standard deviation 5.01266
+Opt pivot y: calculated mean 392.047
+             error mean -5.00268
+             error standard deviation 5.24013
+Opt pivot z: calculated mean 198.174
+             error mean -8.93594
+             error standard deviation 4.46808
+
+dataset e: 
+EM pivot x:  calculated mean 186.068
+             error mean -9.75201
+             error standard deviation 5.12088
+EM pivot y:  calculated mean 175.242
+             error mean -17.8977
+             error standard deviation 8.14974
+EM pivot z:  calculated mean 200.347
+             error mean 2.09661
+             error standard deviation 5.68513
+Opt pivot x: calculated mean 396.202
+             error mean -3.84817
+             error standard deviation 4.51413
+Opt pivot y: calculated mean 393.096
+             error mean -6.22406
+             error standard deviation 4.71564
+Opt pivot z: calculated mean 185.341
+             error mean -4.94868
+             error standard deviation 3.89787
+
+dataset f: 
+EM pivot x:  calculated mean 190.539
+             error mean -5.24093
+             error standard deviation 4.64302
+EM pivot y:  calculated mean 220.141
+             error mean -0.509339
+             error standard deviation 6.74246
+EM pivot z:  calculated mean 192.108
+             error mean -4.47169
+             error standard deviation 3.89376
+Opt pivot x: calculated mean 403.966
+             error mean 2.53592
+             error standard deviation 2.8634
+Opt pivot y: calculated mean 396.63
+             error mean -5.16993
+             error standard deviation 5.1773
+Opt pivot z: calculated mean 193.482
+             error mean -3.66765
+             error standard deviation 3.47252
+
+dataset g: 
+EM pivot x:  calculated mean 207.798
+             error mean 8.28827
+             error standard deviation 7.29994
+EM pivot y:  calculated mean 198.238
+             error mean -0.771875
+             error standard deviation 4.97002
+EM pivot z:  calculated mean 209.949
+             error mean 3.96916
+             error standard deviation 5.06436
+Opt pivot x: calculated mean 399.673
+             error mean 1.23283
+             error standard deviation 4.80154
+Opt pivot y: calculated mean 390.748
+             error mean -4.07205
+             error standard deviation 5.91037
+Opt pivot z: calculated mean 190.677
+             error mean -1.24276
+             error standard deviation 4.94069
+

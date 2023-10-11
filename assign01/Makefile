@@ -19,6 +19,9 @@ CXX_CALONE_OBJS = $(CXX_CALONE_SRCS:%.cpp=%.o)
 CXX_CALTWO_SRCS = registration.cpp matrix.cpp rotation.cpp position.cpp frame.cpp _calibration_test_2.cpp
 CXX_CALTWO_OBJS = $(CXX_CALTWO_SRCS:%.cpp=%.o)
 
+CXX_COMP_SRCS = registration.cpp matrix.cpp rotation.cpp position.cpp frame.cpp io_read.cpp output_comp.cpp
+CXX_COMP_OBJS = $(CXX_COMP_SRCS:%.cpp=%.o)
+
 CXX_IO_SRCS = io_read.cpp _io_test.cpp
 CXX_IO_OBJS = $(CXX_IO_SRCS:%.cpp=%.o)
 
@@ -54,8 +57,11 @@ err:  $(CXX_ERROR_OBJS)
 cis : $(CXX_OBJS)
 	$(CXX) -o $@ $(CXX_OBJS)
 
+comp: $(CXX_COMP_OBJS)
+	$(CXX) -o $@ $(CXX_COMP_OBJS)
+
 clean :
-	rm -f *.o matrix frame regis cis calone caltwo io err depend.mak
+	rm -f *.o matrix frame regis cis calone caltwo io err comp depend.mak
 
 depend :
 	$(CXX) $(CXXFLAGS) -M $(CXX_SRCS) >> depend.mak
@@ -64,6 +70,6 @@ depend.mak :
 	touch $@
 
 solution.zip : 
-	zip -9r solution.zip *.h *.cpp Makefile README.txt
+	zip -9r solution.zip *
 
 include depend.mak

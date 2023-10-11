@@ -1,7 +1,9 @@
 
 NAME: Bella Xia and Hanbei Zhou
 
+Makefile shortcut: make / make cis
 Excutable: cis
+
 Instruction: 
 To run the excutable on rebug or unknown data provided, type the following line in terminal:
     ./cis index
@@ -13,6 +15,8 @@ To run the excutable on other source files, type the following line in terminal:
 the program will then prompt you to enter the source file names.
 
 File description:
+
+Helper functions / Main file
 
 1. matrix.h, matrix.cpp:
 With Eigen library (see the link in the end) needed, define the matrix object and implemente several calculations
@@ -34,6 +38,74 @@ Implemente methods for reading data from 4 types of file. Define f_data struct t
 
 7. main.cpp
 Produce runable file to calculate the C_i and perform pivot calibration.
+
+Unit Tests:
+
+1. _matrix_test.cpp 
+Test matrix-related operations such as assignments, plus / multiplication, transpose, and print
+
+Makefile shortcut: make matrix
+Excutable: matrix
+
+2. _frame_test.cpp
+Test rotation, translation and frame transformation related operations, including initiating
+rotation / translation / frame, frame multiplication with matrices. 
+
+Makefile shortcut: make frame
+Executable: frame
+
+3. _registration_test.cpp
+Test the ability to initiate a point-cloud registration by inserting matrix lists a and b; test
+functionalities point cloud registration and pivot calibration.
+
+Makefile shortcut: make regis
+Executable: regis
+
+4. _io_test.cpp
+Test reading into each type of input files (calbody, calreadings, empivot, optpivot)
+
+Makefile shortcut: make io
+Executable: io
+
+5. _error_test.cpp
+Test the inclusion of errors in both rotation and translation (not really used in programming assignment 1)
+as well as their operations during frame multiplication
+
+Makefile shortcut: make err
+Executable: err
+
+6. _calibration_test_1.cpp
+Test a set case of pivot calibration.
+
+Makefile shortcut: make calone
+Executable: calone
+
+7. _calibration_test_2.cpp
+Test case with random rotational calibrations of a pivot with custom length and distance from reference frame.
+
+Makefile shortcut: make caltwo
+Executable: caltwo
+
+Data Analysis
+
+1. output_comp.cpp
+Output statistics on the resulting output compard with expected output files
+
+Makefile shortcut: make comp
+Executable: comp
+
+Using custom file and its corresponding output file on C expected:
+    ./comp <expected output filename> <student outpu filename>
+
+Using the current a-g debug output files on C expected:
+    ./comp C
+
+Using the current a-g debug output files on pivot calibration:
+    ./comp
+
+Due to the need for repeated trials to be able to obtain a range of possible values for pivot calibration based on
+which frame is chosen to be used to determine the frame axis (G_0), we are unable to provide a quick access to
+stastics over pivot based on the expected and actual output files alone.
 
 
 

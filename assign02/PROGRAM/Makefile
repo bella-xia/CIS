@@ -1,5 +1,8 @@
-CXX_SRCS = matrix.cpp rotation.cpp position.cpp frame.cpp registration.cpp io_read.cpp main.cpp
+CXX_SRCS = matrix.cpp rotation.cpp position.cpp frame.cpp registration.cpp io_read.cpp interpolation.cpp main_pa2.cpp
 CXX_OBJS = $(CXX_SRCS:%.cpp=%.o)
+
+CXX_PA1_SRCS = matrix.cpp rotation.cpp position.cpp frame.cpp registration.cpp io_read.cpp main_pa1.cpp
+CXX_PA1_OBJS = $(CXX_PA1_SRCS:%.cpp=%.o)
 
 CXX_MATRIX_SRCS = matrix.cpp  _matrix_test.cpp
 CXX_MATRIX_OBJS = $(CXX_MATRIX_SRCS:%.cpp=%.o)
@@ -60,8 +63,11 @@ cis : $(CXX_OBJS)
 comp: $(CXX_COMP_OBJS)
 	$(CXX) -o $@ $(CXX_COMP_OBJS)
 
+pa1: $(CXX_PA1_OBJS)
+	$(CXX) -o $@ $(CXX_PA1_OBJS)
+
 clean :
-	rm -f *.o matrix frame regis cis calone caltwo io err comp depend.mak
+	rm -f *.o matrix frame regis cis calone caltwo io err comp pa1 depend.mak
 
 depend :
 	$(CXX) $(CXXFLAGS) -M $(CXX_SRCS) >> depend.mak

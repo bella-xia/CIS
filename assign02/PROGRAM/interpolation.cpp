@@ -63,5 +63,16 @@ Matrix Interpolation::interpolate()
     Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> u_mat(assemble_u().get());
     Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> y_mat(assemble_y().get());
     Matrix coefs = Matrix(u_mat.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(y_mat));
+    coef = Matrix(coefs.get());
+    coef_defined = true;
     return coefs;
+}
+
+Matrix Interpolation::correction_func(Matrix &real_mat)
+{
+    assert(coef_defined);
+    Matrix return_mat = Matrix(1, pow(degree, 3));
+    form_row(real_mat, 0, return_mat);
+    Matrix y(return_mat * coef);
+    return y;
 }

@@ -16,6 +16,21 @@ void read_calbody(std::string file_name, std::vector<std::vector<float>> &data_d
     read_helper(in_file, data_c, n_c);
     in_file.close();
 }
+
+void read_ct_fi(std::string file_name, std::vector<std::vector<float>> &data_b)
+{
+    std::ifstream in_file;
+    in_file.open(file_name);
+    std::string in_line;
+    // this is used to read the first three integers
+    int n_b;
+    char garbage;
+    std::getline(in_file, in_line);
+    std::stringstream(in_line) >> n_b;
+    read_helper(in_file, data_b, n_b);
+    in_file.close();
+}
+
 void read_calreadings(std::string file_name, std::vector<f_data> &frames)
 {
     std::ifstream in_file;

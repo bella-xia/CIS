@@ -55,10 +55,10 @@ int main(int argc, char **argv)
     {
         // initialize all file name components
         std::string path_name = "";
-        std::string debug_path_name = "../PA1 Student Data/pa1-debug-";
-        std::string debug_answer_path_name = "../OUTPUT/PA1 Student Answer/pa1-debug-";
-        std::string unknown_answer_path_name = "../OUTPUT/PA1 Student Answer/pa1-unknown-";
-        std::string unknown_path_name = "../PA1 Student Data/pa1-unknown-";
+        std::string debug_path_name = "../DATA/pa2-debug-";
+        std::string debug_answer_path_name = "../OUTPUT/pa1-debug-";
+        std::string unknown_answer_path_name = "../OUTPUT/pa1-unknown-";
+        std::string unknown_path_name = "../DATA/pa2-unknown-";
         if (idx.compare("h") < 0 && !(idx.compare("a") < 0))
         {
             path_name = debug_path_name;

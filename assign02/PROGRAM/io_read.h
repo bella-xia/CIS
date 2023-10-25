@@ -30,6 +30,8 @@ void read_empivot(std::string file_name, std::vector<f_data> &frames);
 
 void read_optpivot(std::string file_name, std::vector<f_data> &frames);
 
+void read_ct_fi(std::string file_name, std::vector<std::vector<float>> &data_b);
+
 void read_helper(std::ifstream &in_file, std::vector<std::vector<float>> &data, int num_read);
 
 #endif

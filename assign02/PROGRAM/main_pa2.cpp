@@ -175,18 +175,32 @@ int main(int argc, char **argv)
             C_mat_expected_flattened.push_back(ele);
         }
     }
-
     Interpolation interpolation(C_mat_real_flattened, C_mat_expected_flattened);
     // Interpolation interpolation(C_mat_real.at(100), C_mat_expected.at(100));
     Matrix coefficients = interpolation.interpolate();
-    Matrix sample(C_mat_real.at(100).at(18));
-    Matrix expected(C_mat_expected.at(100).at(18));
+    std::vector<std::tuple<int, int>> samples;
+    samples.push_back(std::make_tuple<int, int>(100, 18));
+    samples.push_back(std::make_tuple<int, int>(50, 1));
+    samples.push_back(std::make_tuple<int, int>(25, 10));
+    samples.push_back(std::make_tuple<int, int>(75, 7));
 
-    Matrix calc_result = interpolation.correction_func(sample);
-    std::cout << "Expected: " << std::endl;
-    expected.print_str();
-    std::cout << "Calculated: " << std::endl;
-    calc_result.print_str();
+    std::cout << "using all frames: " << std::endl;
+
+    for (std::tuple<int, int> ele : samples)
+    {
+        int frame = std::get<0>(ele);
+        int idx = std::get<1>(ele);
+        Matrix sample(C_mat_real.at(frame).at(idx));
+        Matrix expected(C_mat_expected.at(frame).at(idx));
+        Matrix calc_result = interpolation.correction_func(Matrix((C_mat_real.at(frame).at(idx))));
+        std::cout << "Frame " << frame << " offset " << idx << ": " << std::endl;
+        std::cout << "Real: " << std::endl;
+        sample.print_str();
+        std::cout << "Expected: " << std::endl;
+        expected.print_str();
+        std::cout << "Calculated: " << std::endl;
+        calc_result.print_str();
+    }
 
     // get Gis from EM pivot
     Registration fg_reg = Registration();
@@ -196,8 +210,9 @@ int main(int argc, char **argv)
     {
         for (int i = 0; i < (int)em_frames[frame_num].data_g.size(); ++i)
         {
-            Matrix m(em_frames[frame_num].data_g[i]);
-            fg_reg.add_matrix_b(interpolation.correction_func(m).transpose());
+            fg_reg.add_matrix_b(interpolation.correction_func(
+                                                 Matrix(em_frames[frame_num].data_g[i]))
+                                    .transpose());
         }
         if (frame_num == (int)em_frames.size() - 1)
         {
@@ -212,16 +227,15 @@ int main(int argc, char **argv)
     Matrix b_tip(em_p_ts.get_pos(0, 0), em_p_ts.get_pos(1, 0), em_p_ts.get_pos(2, 0));
     Matrix b_post(em_p_ts.get_pos(3, 0), em_p_ts.get_pos(4, 0), em_p_ts.get_pos(5, 0));
 
-    // Registration fi_reg = Registration();
-
     std::vector<Matrix> B_vec;
 
     for (int frame_num = 0; frame_num < (int)fiducial_frames.size(); ++frame_num)
     {
         for (int i = 0; i < (int)fiducial_frames[frame_num].data_g.size(); ++i)
         {
-            Matrix m(fiducial_frames[frame_num].data_g[i]);
-            fg_reg.add_matrix_b(interpolation.correction_func(m).transpose());
+            fg_reg.add_matrix_b(interpolation.correction_func(
+                                                 Matrix(fiducial_frames[frame_num].data_g[i]))
+                                    .transpose());
         }
         Frame fg = fg_reg.point_cloud_registration();
         B_vec.push_back(fg * b_tip);
@@ -242,8 +256,9 @@ int main(int argc, char **argv)
     {
         for (int i = 0; i < (int)nav_frames[frame_num].data_g.size(); ++i)
         {
-            Matrix m(nav_frames[frame_num].data_g[i]);
-            fg_reg.add_matrix_b(interpolation.correction_func(m).transpose());
+            fg_reg.add_matrix_b(interpolation.correction_func(
+                                                 Matrix(nav_frames[frame_num].data_g[i]))
+                                    .transpose());
         }
         Frame fg = fg_reg.point_cloud_registration();
         Matrix B(fg * b_tip);

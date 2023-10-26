@@ -9,10 +9,9 @@ float Interpolation::binomialCoefficients(int n, int k)
 
 float Interpolation::ber_poly(int i, int j, int k, Matrix mat)
 {
-    Matrix mat_normalized = mat * (1.0 / mat.magnitude());
-    float x = mat_normalized.get_pos(0, 0);
-    float y = mat_normalized.get_pos(1, 0);
-    float z = mat_normalized.get_pos(2, 0);
+    float x = mat.get_pos(0, 0);
+    float y = mat.get_pos(1, 0);
+    float z = mat.get_pos(2, 0);
     float B_x = binomialCoefficients(degree, i) * pow((1 - x), degree - i) * pow(x, i);
     float B_y = binomialCoefficients(degree, j) * pow((1 - y), degree - j) * pow(y, j);
     float B_z = binomialCoefficients(degree, k) * pow((1 - z), degree - k) * pow(z, k);
@@ -21,14 +20,14 @@ float Interpolation::ber_poly(int i, int j, int k, Matrix mat)
 
 void Interpolation::form_row(Matrix mat, int nrow, Matrix &return_mat)
 {
-    for (int i = 0; i < degree; i++)
+    for (int i = 0; i <= degree; i++)
     {
-        for (int j = 0; j < degree; ++j)
+        for (int j = 0; j <= degree; ++j)
         {
-            for (int k = 0; k < degree; ++k)
+            for (int k = 0; k <= degree; ++k)
             {
                 float ber_poly_val = ber_poly(i, j, k, mat);
-                return_mat.assign(nrow, i * pow(degree, 2) + j * degree + k,
+                return_mat.assign(nrow, i * pow(degree + 1, 2) + j * (degree + 1) + k,
                                   ber_poly_val);
             }
         }
@@ -37,10 +36,22 @@ void Interpolation::form_row(Matrix mat, int nrow, Matrix &return_mat)
 
 Matrix Interpolation::assemble_u()
 {
-    Matrix return_mat = Matrix(N, pow(degree, 3));
+    Matrix norm_u_mats = Matrix(N, 3);
     for (int i = 0; i < N; ++i)
     {
-        form_row(mats_u.at(i), i, return_mat);
+        for (int j = 0; j < 3; ++j)
+        {
+            norm_u_mats.assign(i, j, mats_u.at(i).get_pos(j, 0));
+        }
+    }
+    std::tuple<float, float> max_min_val = norm_u_mats.min_max_scale();
+    max = std::get<0>(max_min_val);
+    min = std::get<1>(max_min_val);
+    max_min_defined = true;
+    Matrix return_mat = Matrix(N, pow(degree + 1, 3));
+    for (int i = 0; i < N; ++i)
+    {
+        form_row(Matrix(norm_u_mats.get_pos(i, 0), norm_u_mats.get_pos(i, 1), norm_u_mats.get_pos(i, 2)), i, return_mat);
     }
     return return_mat;
 }
@@ -68,10 +79,12 @@ Matrix Interpolation::interpolate()
     return coefs;
 }
 
-Matrix Interpolation::correction_func(Matrix &real_mat)
+Matrix Interpolation::correction_func(Matrix real_mat)
 {
     assert(coef_defined);
-    Matrix return_mat = Matrix(1, pow(degree, 3));
+    assert(max_min_defined);
+    real_mat.min_max_scale(max, min);
+    Matrix return_mat = Matrix(1, pow(degree + 1, 3));
     form_row(real_mat, 0, return_mat);
     Matrix y(return_mat * coef);
     return y;

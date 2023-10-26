@@ -35,9 +35,10 @@ public:
     Matrix skew() const;
     Matrix cross(const Matrix &other) const { return skew() * other; }
     float magnitude() const;
-
+    void normalize();
+    std::tuple<float, float> min_max_scale();
+    void min_max_scale(float max, float min);
     void assign(int row, int col, float val) { mat(row, col) = val; }
-
     Eigen::MatrixXf get() const { return mat; }
     float get_pos(int row, int col) const { return mat(row, col); }
     int get_row() const { return nrow; }

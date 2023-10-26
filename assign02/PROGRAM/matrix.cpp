@@ -54,6 +54,37 @@ float Matrix::magnitude() const
     return mat.norm();
 }
 
+void Matrix::normalize()
+{
+    mat.normalize();
+}
+
+std::tuple<float, float> Matrix::min_max_scale()
+{
+    float max = mat.maxCoeff();
+    float min = mat.minCoeff();
+    // std::cout << max << " " << std::endl;
+    for (int i = 0; i < nrow; i++)
+    {
+        for (int j = 0; j < ncol; j++)
+        {
+            mat(i, j) = (mat(i, j) - min) / (max - min);
+        }
+    }
+    return std::make_tuple(max, min);
+}
+
+void Matrix::min_max_scale(float max, float min)
+{
+    for (int i = 0; i < nrow; i++)
+    {
+        for (int j = 0; j < ncol; j++)
+        {
+            mat(i, j) = (mat(i, j) - min) / (max - min);
+        }
+    }
+}
+
 Matrix Matrix::skew() const
 {
     if (nrow != 3 || ncol != 1)

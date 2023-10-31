@@ -24,7 +24,6 @@ void read_ct_fi(std::string file_name, std::vector<std::vector<float>> &data_b)
     std::string in_line;
     // this is used to read the first three integers
     int n_b;
-    char garbage;
     std::getline(in_file, in_line);
     std::stringstream(in_line) >> n_b;
     read_helper(in_file, data_b, n_b);

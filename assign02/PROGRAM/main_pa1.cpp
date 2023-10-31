@@ -188,7 +188,7 @@ int main(int argc, char **argv)
         fd_reg_2.clean_matrix_b();
     }
     Matrix opt_p_ts = fh_reg.pivot_calibration(fh_frames);
-    std::string output_filename = answer_path_name + idx + "-output.txt";
+    std::string output_filename = answer_path_name + idx + "-output1.txt";
     std::ofstream out_file(output_filename);
     if (out_file.is_open())
     {

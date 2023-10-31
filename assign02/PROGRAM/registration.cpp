@@ -71,6 +71,7 @@ Frame Registration::point_cloud_registration()
     {
         calculate_midpoint_a();
     }
+    a_mid_calculated = true;
     calculate_midpoint_b();
 
     // subtract centroid

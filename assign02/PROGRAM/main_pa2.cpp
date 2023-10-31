@@ -201,75 +201,108 @@ int main(int argc, char **argv)
         std::cout << "Calculated: " << std::endl;
         calc_result.print_str();
     }
-
-    // get Gis from EM pivot
-    Registration fg_reg = Registration();
-    std::vector<Frame> fg_frames = std::vector<Frame>();
-    // pass in G vectors, find f_g frames
-    for (int frame_num = (int)em_frames.size() - 1; frame_num >= 0; --frame_num)
+    std::vector<std::vector<Matrix>> results;
+    for (int iter = 0; iter < 100; ++iter)
     {
-        for (int i = 0; i < (int)em_frames[frame_num].data_g.size(); ++i)
+        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        auto rng = std::default_random_engine{seed};
+        std::shuffle(std::begin(em_frames), std::end(em_frames), rng);
+        // get Gis from EM pivot
+        Registration fg_reg = Registration();
+        std::vector<Frame> fg_frames = std::vector<Frame>();
+        // pass in G vectors, find f_g frames
+        for (int frame_num = (int)em_frames.size() - 1; frame_num >= 0; --frame_num)
         {
-            fg_reg.add_matrix_b(interpolation.correction_func(
-                                                 Matrix(em_frames[frame_num].data_g[i]))
-                                    .transpose());
+            for (int i = 0; i < (int)em_frames[frame_num].data_g.size(); ++i)
+            {
+                fg_reg.add_matrix_b(interpolation.correction_func(
+                                                     Matrix(em_frames[frame_num].data_g[i]))
+                                        .transpose());
+            }
+            if (frame_num == (int)em_frames.size() - 1)
+            {
+                fg_reg.get_matrix_a_from_b();
+            }
+            Frame fg = fg_reg.point_cloud_registration();
+            fg_frames.push_back(fg);
+            fg_reg.clean_matrix_b();
         }
-        if (frame_num == (int)em_frames.size() - 1)
+        Matrix em_p_ts = fg_reg.pivot_calibration(fg_frames);
+
+        Matrix b_tip(em_p_ts.get_pos(0, 0), em_p_ts.get_pos(1, 0), em_p_ts.get_pos(2, 0));
+        Matrix b_post(em_p_ts.get_pos(3, 0), em_p_ts.get_pos(4, 0), em_p_ts.get_pos(5, 0));
+
+        std::vector<Matrix> B_vec;
+
+        for (int frame_num = 0; frame_num < (int)fiducial_frames.size(); ++frame_num)
         {
-            fg_reg.get_matrix_a_from_b();
+            for (int i = 0; i < (int)fiducial_frames[frame_num].data_g.size(); ++i)
+            {
+                fg_reg.add_matrix_b(interpolation.correction_func(
+                                                     Matrix(fiducial_frames[frame_num].data_g[i]))
+                                        .transpose());
+            }
+            Frame fg = fg_reg.point_cloud_registration();
+            B_vec.push_back(fg * b_tip);
+            fg_reg.clean_matrix_b();
         }
-        Frame fg = fg_reg.point_cloud_registration();
-        fg_frames.push_back(fg);
-        fg_reg.clean_matrix_b();
+
+        Registration fb_reg = Registration();
+        for (int i = 0; i < (int)B_vec.size(); i++)
+        {
+            fb_reg.add_matrix_a(B_vec[i]);
+            fb_reg.add_matrix_b(Matrix(data_b[i]));
+        }
+        Frame fb = fb_reg.point_cloud_registration();
+
+        std::vector<Matrix> nav_b;
+
+        for (int frame_num = 0; frame_num < (int)nav_frames.size(); ++frame_num)
+        {
+            for (int i = 0; i < (int)nav_frames[frame_num].data_g.size(); ++i)
+            {
+                fg_reg.add_matrix_b(interpolation.correction_func(
+                                                     Matrix(nav_frames[frame_num].data_g[i]))
+                                        .transpose());
+            }
+            Frame fg = fg_reg.point_cloud_registration();
+            Matrix B(fg * b_tip);
+            nav_b.push_back(fb * B);
+            fg_reg.clean_matrix_b();
+        }
+
+        results.push_back(nav_b);
     }
-    Matrix em_p_ts = fg_reg.pivot_calibration(fg_frames);
-
-    Matrix b_tip(em_p_ts.get_pos(0, 0), em_p_ts.get_pos(1, 0), em_p_ts.get_pos(2, 0));
-    Matrix b_post(em_p_ts.get_pos(3, 0), em_p_ts.get_pos(4, 0), em_p_ts.get_pos(5, 0));
-
-    std::vector<Matrix> B_vec;
-
-    for (int frame_num = 0; frame_num < (int)fiducial_frames.size(); ++frame_num)
+    std::vector<Matrix> total_mats;
+    int index;
+    int iterate;
+    iterate = 0;
+    for (std::vector<Matrix> elements : results)
     {
-        for (int i = 0; i < (int)fiducial_frames[frame_num].data_g.size(); ++i)
+        index = 0;
+        for (Matrix ele : elements)
         {
-            fg_reg.add_matrix_b(interpolation.correction_func(
-                                                 Matrix(fiducial_frames[frame_num].data_g[i]))
-                                    .transpose());
+            if (iterate == 0)
+            {
+                total_mats.push_back(ele);
+            }
+            else
+            {
+                total_mats.at(index) = total_mats.at(index) + ele;
+                if (iterate == (int)results.size() - 1)
+                {
+                    total_mats.at(index) = Matrix(total_mats.at(index).get_pos(0, 0) / (float)results.size(),
+                                                  total_mats.at(index).get_pos(1, 0) / (float)results.size(),
+                                                  total_mats.at(index).get_pos(2, 0) / (float)results.size());
+                }
+            }
+            index++;
         }
-        Frame fg = fg_reg.point_cloud_registration();
-        B_vec.push_back(fg * b_tip);
-        fg_reg.clean_matrix_b();
+        iterate++;
     }
-
-    Registration fb_reg = Registration();
-    for (int i = 0; i < (int)B_vec.size(); i++)
-    {
-        fb_reg.add_matrix_a(B_vec[i]);
-        fb_reg.add_matrix_b(Matrix(data_b[i]));
-    }
-    Frame fb = fb_reg.point_cloud_registration();
-
-    std::vector<Matrix> nav_b;
-
-    for (int frame_num = 0; frame_num < (int)nav_frames.size(); ++frame_num)
-    {
-        for (int i = 0; i < (int)nav_frames[frame_num].data_g.size(); ++i)
-        {
-            fg_reg.add_matrix_b(interpolation.correction_func(
-                                                 Matrix(nav_frames[frame_num].data_g[i]))
-                                    .transpose());
-        }
-        Frame fg = fg_reg.point_cloud_registration();
-        Matrix B(fg * b_tip);
-        nav_b.push_back(fb * B);
-        fg_reg.clean_matrix_b();
-    }
-
-    for (Matrix ele : nav_b)
+    for (Matrix ele : total_mats)
     {
         ele.print_str();
-        std::cout << std::endl;
     }
 
     return 0;

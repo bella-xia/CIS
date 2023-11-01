@@ -9,30 +9,35 @@ class Frame
 {
 
 private:
-    std::string from;
-    std::string to;
     Rotation rot;
     Position pos;
 
 public:
-    Frame() : from("hisashi"), to("taylor"), rot(Rotation()), pos(Position()) {}
-    Frame(Rotation r, Position p) : from("taylor"), to("hisashi"), rot(r), pos(p) {}
+    //default constructor: assign an empty rotation and empty translation.
+    Frame() : rot(Rotation()), pos(Position()) {}
 
-    void assign_from(std::string from) { this->from = from; }
-    void assign_to(std::string to) { this->to = to; }
-    void assign_from_to(std::string from, std::string to)
-    {
-        this->from = from;
-        this->to = to;
-    }
+    //constructor basing on a given rotation and translation
+    Frame(Rotation r, Position p) : rot(r), pos(p) {}
+
+    //set rotation
     void assign_rot(Rotation rot) { this->rot = rot; }
+
+    //set translation
     void assign_pos(Position pos) { this->pos = pos; }
 
+    //get rotation
     Rotation get_rot() const { return rot; }
+
+    //get translation
     Position get_pos() const { return pos; }
 
+    //define dot product operator of the Frame * Matrix
     Matrix operator*(const Matrix &mat) const;
+
+    //define dot product operator of the Frame * Frame
     Frame operator*(const Frame &f) const;
+
+    //calculate the inverse of a frame.
     Frame inverse() const;
 };
 

@@ -34,6 +34,9 @@ CXX_INTERP_OBJS = $(CXX_INTERP_SRCS:%.cpp=%.o)
 CXX_CT_SRCS = matrix.cpp rotation.cpp position.cpp frame.cpp registration.cpp io_read.cpp interpolation.cpp _ct_frame_test.cpp
 CXX_CT_OBJS = $(CXX_CT_SRCS:%.cpp=%.o)
 
+CXX_CTTWO_SRCS = matrix.cpp rotation.cpp position.cpp frame.cpp registration.cpp io_read.cpp interpolation.cpp _ct_frame_test_2.cpp
+CXX_CTTWO_OBJS = $(CXX_CTTWO_SRCS:%.cpp=%.o)
+
 CXX = g++ 
 CXXFLAGS =  -g -Wall -std=c++17 -I./eigen-3.4.0
 
@@ -75,11 +78,14 @@ interp: $(CXX_INTERP_OBJS)
 ct: $(CXX_CT_OBJS)
 	$(CXX) -o $@ $(CXX_CT_OBJS)
 
+ct2: $(CXX_CTTWO_OBJS)
+	$(CXX) -o $@ $(CXX_CTTWO_OBJS)
+
 pa1: $(CXX_PA1_OBJS)
 	$(CXX) -o $@ $(CXX_PA1_OBJS)
 
 clean :
-	rm -f *.o matrix frame regis cis calone caltwo io err comp pa1 interp ct depend.mak
+	rm -f *.o matrix frame regis cis calone caltwo io err comp pa1 interp ct ct2 depend.mak
 
 depend :
 	$(CXX) $(CXXFLAGS) -M $(CXX_SRCS) >> depend.mak

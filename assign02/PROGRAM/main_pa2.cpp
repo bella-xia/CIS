@@ -188,197 +188,191 @@ int main(int argc, char **argv)
     // interpolate to get the correction function
     interpolation.interpolate();
 
-    // create a vector to store final results
-    std::vector<Matrix> total_mats;
+    // // create a vector to store final results
+    // std::vector<Matrix> total_mats;
 
-    // pivot calibration with updated vectors
-    Registration fg_reg = Registration();
-    std::vector<Frame> fg_frames = std::vector<Frame>();
-    // pass in G vectors, find f_g frames
-    for (int frame_num = 0; frame_num < (int)em_frames.size(); frame_num++)
-    {
-        for (int i = 0; i < (int)em_frames[frame_num].data_g.size(); ++i)
-        {
-            // for every frame, pass every vector into correction function,
-            // then put the output into matrix b for point cloud registration
-            fg_reg.add_matrix_b(interpolation.correction_func(
-                                                 Matrix(em_frames[frame_num].data_g[i]))
-                                    .transpose());
-        }
-        // if this is the first frame, calculate the g references
-        if (frame_num == 0)
-        {
-            fg_reg.get_matrix_a_from_b();
-        }
-        // do point cloud registration for each frame, push the frame transformation
-        // into a vector, and then clean all the matrix b
-        // since we will use the same local reference axis, so matrix a is never cleaned
-        Frame fg = fg_reg.point_cloud_registration();
-        fg_frames.push_back(fg);
-        fg_reg.clean_matrix_b();
-    }
+    // // pivot calibration with updated vectors
+    // Registration fg_reg = Registration();
+    // std::vector<Frame> fg_frames = std::vector<Frame>();
+    // // pass in G vectors, find f_g frames
+    // for (int frame_num = 0; frame_num < (int)em_frames.size(); frame_num++)
+    // {
+    //     for (int i = 0; i < (int)em_frames[frame_num].data_g.size(); ++i)
+    //     {
+    //         // for every frame, pass every vector into correction function,
+    //         // then put the output into matrix b for point cloud registration
+    //         fg_reg.add_matrix_b(interpolation.correction_func(
+    //                                              Matrix(em_frames[frame_num].data_g[i]))
+    //                                 .transpose());
+    //     }
+    //     // if this is the first frame, calculate the g references
+    //     if (frame_num == 0)
+    //     {
+    //         fg_reg.get_matrix_a_from_b();
+    //     }
+    //     // do point cloud registration for each frame, push the frame transformation
+    //     // into a vector, and then clean all the matrix b
+    //     // since we will use the same local reference axis, so matrix a is never cleaned
+    //     Frame fg = fg_reg.point_cloud_registration();
+    //     fg_frames.push_back(fg);
+    //     fg_reg.clean_matrix_b();
+    // }
 
-    // pass in all the frame transformation, and do pivot calibration
-    Matrix em_p_ts = fg_reg.pivot_calibration(fg_frames);
+    // // pass in all the frame transformation, and do pivot calibration
+    // Matrix em_p_ts = fg_reg.pivot_calibration(fg_frames);
 
-    // extract from the result
-    Matrix b_tip(em_p_ts.get_pos(0, 0), em_p_ts.get_pos(1, 0), em_p_ts.get_pos(2, 0));
-    std::cout << "b tip: " << std::endl;
-    b_tip.print_str();
+    // // extract from the result
+    // Matrix b_tip(em_p_ts.get_pos(0, 0), em_p_ts.get_pos(1, 0), em_p_ts.get_pos(2, 0));
+    // std::cout << "b tip: " << std::endl;
+    // b_tip.print_str();
 
-    // calculate all the B vectors based on the current frame's point-cloud registration
-    // and the calculate tip vector from local reference axis
-    std::vector<Matrix> B_vec;
+    // // calculate all the B vectors based on the current frame's point-cloud registration
+    // // and the calculate tip vector from local reference axis
+    // std::vector<Matrix> B_vec;
 
-    for (int frame_num = 0; frame_num < (int)fiducial_frames.size(); ++frame_num)
-    {
-        for (int i = 0; i < (int)fiducial_frames[frame_num].data_g.size(); ++i)
-        {
-            fg_reg.add_matrix_b(interpolation.correction_func(
-                                                 Matrix(fiducial_frames[frame_num].data_g[i]))
-                                    .transpose());
-        }
-        Frame fg = fg_reg.point_cloud_registration();
-        B_vec.push_back(fg * b_tip);
-        fg_reg.clean_matrix_b();
-    }
+    // for (int frame_num = 0; frame_num < (int)fiducial_frames.size(); ++frame_num)
+    // {
+    //     for (int i = 0; i < (int)fiducial_frames[frame_num].data_g.size(); ++i)
+    //     {
+    //         fg_reg.add_matrix_b(interpolation.correction_func(
+    //                                              Matrix(fiducial_frames[frame_num].data_g[i]))
+    //                                 .transpose());
+    //     }
+    //     Frame fg = fg_reg.point_cloud_registration();
+    //     B_vec.push_back(fg * b_tip);
+    //     fg_reg.clean_matrix_b();
+    // }
 
-    // pair the calculated B vectors and the bs from CT fiducial
-    // then perform point-cloud registration on the EM frame and CT frame
-    Registration fb_reg = Registration();
-    for (int i = 0; i < (int)B_vec.size(); i++)
-    {
-        fb_reg.add_matrix_a(B_vec[i]);
-        fb_reg.add_matrix_b(Matrix(data_b[i]));
-    }
-    Frame fb = fb_reg.point_cloud_registration();
+    // // pair the calculated B vectors and the bs from CT fiducial
+    // // then perform point-cloud registration on the EM frame and CT frame
+    // Registration fb_reg = Registration();
+    // for (int i = 0; i < (int)B_vec.size(); i++)
+    // {
+    //     fb_reg.add_matrix_a(B_vec[i]);
+    //     fb_reg.add_matrix_b(Matrix(data_b[i]));
+    // }
+    // Frame fb = fb_reg.point_cloud_registration();
 
-    // for each navigation frame G value, use point-cloud registration
-    // with respect to the local frame to obtain the vector from EM to probe tip
-    for (int frame_num = 0; frame_num < (int)nav_frames.size(); ++frame_num)
-    {
-        for (int i = 0; i < (int)nav_frames[frame_num].data_g.size(); ++i)
-        {
-            fg_reg.add_matrix_b(interpolation.correction_func(
-                                                 Matrix(nav_frames[frame_num].data_g[i]))
-                                    .transpose());
-        }
-        Frame fg = fg_reg.point_cloud_registration();
-        Matrix B(fg * b_tip);
-        // then use the previously calculated frame transformation
-        // from EM frame to CT frame to obtain b vectors
-        total_mats.push_back(fb * B);
-        fg_reg.clean_matrix_b();
-    }
+    // // for each navigation frame G value, use point-cloud registration
+    // // with respect to the local frame to obtain the vector from EM to probe tip
+    // for (int frame_num = 0; frame_num < (int)nav_frames.size(); ++frame_num)
+    // {
+    //     for (int i = 0; i < (int)nav_frames[frame_num].data_g.size(); ++i)
+    //     {
+    //         fg_reg.add_matrix_b(interpolation.correction_func(
+    //                                              Matrix(nav_frames[frame_num].data_g[i]))
+    //                                 .transpose());
+    //     }
+    //     Frame fg = fg_reg.point_cloud_registration();
+    //     Matrix B(fg * b_tip);
+    //     // then use the previously calculated frame transformation
+    //     // from EM frame to CT frame to obtain b vectors
+    //     total_mats.push_back(fb * B);
+    //     fg_reg.clean_matrix_b();
+    // }
 
     // version if we would randomly shuffle the em_frames and
     // iterate for 100 times
-    // // create a vector of vector of matrix to store the results
-    // std::vector<std::vector<Matrix>> results;
-    // for (int iter = 0; iter < 100; ++iter)
-    // {
-    //     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    //     auto rng = std::default_random_engine{seed};
-    //     std::shuffle(std::begin(em_frames), std::end(em_frames), rng);
-    //     // get Gis from EM pivot
-    //     Registration fg_reg = Registration();
-    //     std::vector<Frame> fg_frames = std::vector<Frame>();
-    //     // pass in G vectors, find f_g frames
-    //     for (int frame_num = (int)em_frames.size() - 1; frame_num >= 0; --frame_num)
-    //     {
-    //         for (int i = 0; i < (int)em_frames[frame_num].data_g.size(); ++i)
-    //         {
-    //             fg_reg.add_matrix_b(interpolation.correction_func(
-    //                                                  Matrix(em_frames[frame_num].data_g[i]))
-    //                                     .transpose());
-    //         }
-    //         if (frame_num == (int)em_frames.size() - 1)
-    //         {
-    //             fg_reg.get_matrix_a_from_b();
-    //         }
-    //         Frame fg = fg_reg.point_cloud_registration();
-    //         fg_frames.push_back(fg);
-    //         fg_reg.clean_matrix_b();
-    //     }
-    //     Matrix em_p_ts = fg_reg.pivot_calibration(fg_frames);
+    //  create a vector of vector of matrix to store the results
+    std::vector<std::vector<Matrix>> results;
+    for (int iter = 0; iter < 100; ++iter)
+    {
+        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        auto rng = std::default_random_engine{seed};
+        std::shuffle(std::begin(em_frames), std::end(em_frames), rng);
+        // get Gis from EM pivot
+        Registration fg_reg = Registration();
+        std::vector<Frame> fg_frames = std::vector<Frame>();
+        // pass in G vectors, find f_g frames
+        for (int frame_num = (int)em_frames.size() - 1; frame_num >= 0; --frame_num)
+        {
+            for (int i = 0; i < (int)em_frames[frame_num].data_g.size(); ++i)
+            {
+                fg_reg.add_matrix_b(interpolation.correction_func(
+                                                     Matrix(em_frames[frame_num].data_g[i]))
+                                        .transpose());
+            }
+            if (frame_num == (int)em_frames.size() - 1)
+            {
+                fg_reg.get_matrix_a_from_b();
+            }
+            Frame fg = fg_reg.point_cloud_registration();
+            fg_frames.push_back(fg);
+            fg_reg.clean_matrix_b();
+        }
+        Matrix em_p_ts = fg_reg.pivot_calibration(fg_frames);
 
-    //     Matrix b_tip(em_p_ts.get_pos(0, 0), em_p_ts.get_pos(1, 0), em_p_ts.get_pos(2, 0));
-    //     Matrix b_post(em_p_ts.get_pos(3, 0), em_p_ts.get_pos(4, 0), em_p_ts.get_pos(5, 0));
+        Matrix b_tip(em_p_ts.get_pos(0, 0), em_p_ts.get_pos(1, 0), em_p_ts.get_pos(2, 0));
+        Matrix b_post(em_p_ts.get_pos(3, 0), em_p_ts.get_pos(4, 0), em_p_ts.get_pos(5, 0));
 
-    //     std::vector<Matrix> B_vec;
+        std::vector<Matrix> B_vec;
 
-    //     for (int frame_num = 0; frame_num < (int)fiducial_frames.size(); ++frame_num)
-    //     {
-    //         for (int i = 0; i < (int)fiducial_frames[frame_num].data_g.size(); ++i)
-    //         {
-    //             fg_reg.add_matrix_b(interpolation.correction_func(
-    //                                                  Matrix(fiducial_frames[frame_num].data_g[i]))
-    //                                     .transpose());
-    //         }
-    //         Frame fg = fg_reg.point_cloud_registration();
-    //         B_vec.push_back(fg * b_tip);
-    //         fg_reg.clean_matrix_b();
-    //     }
+        for (int frame_num = 0; frame_num < (int)fiducial_frames.size(); ++frame_num)
+        {
+            for (int i = 0; i < (int)fiducial_frames[frame_num].data_g.size(); ++i)
+            {
+                fg_reg.add_matrix_b(interpolation.correction_func(
+                                                     Matrix(fiducial_frames[frame_num].data_g[i]))
+                                        .transpose());
+            }
+            Frame fg = fg_reg.point_cloud_registration();
+            B_vec.push_back(fg * b_tip);
+            fg_reg.clean_matrix_b();
+        }
 
-    //     Registration fb_reg = Registration();
-    //     for (int i = 0; i < (int)B_vec.size(); i++)
-    //     {
-    //         fb_reg.add_matrix_a(B_vec[i]);
-    //         fb_reg.add_matrix_b(Matrix(data_b[i]));
-    //     }
-    //     Frame fb = fb_reg.point_cloud_registration();
+        Registration fb_reg = Registration();
+        for (int i = 0; i < (int)B_vec.size(); i++)
+        {
+            fb_reg.add_matrix_a(B_vec[i]);
+            fb_reg.add_matrix_b(Matrix(data_b[i]));
+        }
+        Frame fb = fb_reg.point_cloud_registration();
 
-    //     std::vector<Matrix> nav_b;
+        std::vector<Matrix> nav_b;
 
-    //     for (int frame_num = 0; frame_num < (int)nav_frames.size(); ++frame_num)
-    //     {
-    //         for (int i = 0; i < (int)nav_frames[frame_num].data_g.size(); ++i)
-    //         {
-    //             fg_reg.add_matrix_b(interpolation.correction_func(
-    //                                                  Matrix(nav_frames[frame_num].data_g[i]))
-    //                                     .transpose());
-    //         }
-    //         Frame fg = fg_reg.point_cloud_registration();
-    //         Matrix B(fg * b_tip);
-    //         nav_b.push_back(fb * B);
-    //         fg_reg.clean_matrix_b();
-    //     }
+        for (int frame_num = 0; frame_num < (int)nav_frames.size(); ++frame_num)
+        {
+            for (int i = 0; i < (int)nav_frames[frame_num].data_g.size(); ++i)
+            {
+                fg_reg.add_matrix_b(interpolation.correction_func(
+                                                     Matrix(nav_frames[frame_num].data_g[i]))
+                                        .transpose());
+            }
+            Frame fg = fg_reg.point_cloud_registration();
+            Matrix B(fg * b_tip);
+            nav_b.push_back(fb * B);
+            fg_reg.clean_matrix_b();
+        }
 
-    //     results.push_back(nav_b);
-    // }
-    // std::vector<Matrix> total_mats;
-    // int index;
-    // int iterate;
-    // iterate = 0;
-    // for (std::vector<Matrix> elements : results)
-    // {
-    //     index = 0;
-    //     for (Matrix ele : elements)
-    //     {
-    //         if (iterate == 0)
-    //         {
-    //             total_mats.push_back(ele);
-    //         }
-    //         else
-    //         {
-    //             total_mats.at(index) = total_mats.at(index) + ele;
-    //             if (iterate == (int)results.size() - 1)
-    //             {
-    //                 total_mats.at(index) = Matrix(total_mats.at(index).get_pos(0, 0) / (float)results.size(),
-    //                                               total_mats.at(index).get_pos(1, 0) / (float)results.size(),
-    //                                               total_mats.at(index).get_pos(2, 0) / (float)results.size());
-    //             }
-    //         }
-    //         index++;
-    //     }
-    //     iterate++;
-    // }
-
-    // print out the final result
-    // for (Matrix ele : total_mats)
-    // {
-    //     ele.print_str();
-    // }
+        results.push_back(nav_b);
+    }
+    std::vector<Matrix> total_mats;
+    int index;
+    int iterate;
+    iterate = 0;
+    for (std::vector<Matrix> elements : results)
+    {
+        index = 0;
+        for (Matrix ele : elements)
+        {
+            if (iterate == 0)
+            {
+                total_mats.push_back(ele);
+            }
+            else
+            {
+                total_mats.at(index) = total_mats.at(index) + ele;
+                if (iterate == (int)results.size() - 1)
+                {
+                    total_mats.at(index) = Matrix(total_mats.at(index).get_pos(0, 0) / (float)results.size(),
+                                                  total_mats.at(index).get_pos(1, 0) / (float)results.size(),
+                                                  total_mats.at(index).get_pos(2, 0) / (float)results.size());
+                }
+            }
+            index++;
+        }
+        iterate++;
+    }
 
     // opens a file with specified answer path name
     std::string output_filename = (idx.compare("other") != 0) ? answer_path_name + idx + "-output2.txt" : answer_path_name;

@@ -100,6 +100,18 @@ Test interpolation implementation by comparing the expected and real value rando
 Makefile shortcut: make interp
 Executable: interp
 
+9. _ct_frame_test.cpp
+Test EM-to-CT frame transformation based on fixed values.
+Makefile shortcut: make ct
+Executable: ct
+
+10. _ct_frame_test_2.cpp
+Test randomized process of calibration; EM-to-CT frame registation based on calibrated result; transformation of new navigated EM into CT frame
+Includes a random noise level of 0.001
+
+Makefile shortcut: make ct2
+Executable: ct2
+
 Data Analysis
 
 1. output_comp.cpp

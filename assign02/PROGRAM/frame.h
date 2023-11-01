@@ -14,6 +14,8 @@ private:
 
 public:
     //default constructor: assign an empty rotation and empty translation.
+    // default ： Rotation - identity matrix, 0 error
+    /// default : Translation - 0 translation, 0 error
     Frame() : rot(Rotation()), pos(Position()) {}
 
     //constructor basing on a given rotation and translation

@@ -223,6 +223,8 @@ int main(int argc, char **argv)
 
     // extract from the result
     Matrix b_tip(em_p_ts.get_pos(0, 0), em_p_ts.get_pos(1, 0), em_p_ts.get_pos(2, 0));
+    std::cout << "b tip: " << std::endl;
+    b_tip.print_str();
 
     // calculate all the B vectors based on the current frame's point-cloud registration
     // and the calculate tip vector from local reference axis

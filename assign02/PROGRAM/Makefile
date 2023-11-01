@@ -31,9 +31,6 @@ CXX_IO_OBJS = $(CXX_IO_SRCS:%.cpp=%.o)
 CXX_INTERP_SRCS = matrix.cpp rotation.cpp position.cpp frame.cpp registration.cpp io_read.cpp interpolation.cpp _interpolation_test.cpp
 CXX_INTERP_OBJS = $(CXX_INTERP_SRCS:%.cpp=%.o)
 
-CXX_CTFRAME_SRCS = matrix.cpp rotation.cpp position.cpp frame.cpp registration.cpp io_read.cpp _F_CT_test.cpp
-CXX_CTFRAME_OBJS = $(CXX_INTERP_SRCS:%.cpp=%.o)
-
 CXX = g++ 
 CXXFLAGS =  -g -Wall -std=c++17 -I./eigen-3.4.0
 
@@ -72,6 +69,9 @@ comp: $(CXX_COMP_OBJS)
 interp: $(CXX_INTERP_OBJS)
 	$(CXX) -o $@ $(CXX_INTERP_OBJS)
 
+ct: $(CXX_CT_OBJS)
+	$(CXX) -o $@ $(CXX_CT_OBJS)
+
 pa1: $(CXX_PA1_OBJS)
 	$(CXX) -o $@ $(CXX_PA1_OBJS)
 	
@@ -79,7 +79,7 @@ ctframe: $(CXX_CTFRAME_OBJS)
 	$(CXX) -o $@ $(CXX_CTFRAME_OBJS)
 
 clean :
-	rm -f *.o matrix frame regis cis calone caltwo io err comp pa1 interp ctframe depend.mak
+	rm -f *.o matrix frame regis cis calone caltwo io err comp pa1 interp depend.mak
 
 depend :
 	$(CXX) $(CXXFLAGS) -M $(CXX_SRCS) >> depend.mak

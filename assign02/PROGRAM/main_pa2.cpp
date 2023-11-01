@@ -8,7 +8,7 @@
 
 int main(int argc, char **argv)
 {
-#
+
     std::string idx = "";
     if (argc > 1)
     {

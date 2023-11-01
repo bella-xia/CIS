@@ -94,6 +94,6 @@ depend.mak :
 	touch $@
 
 solution.zip : 
-	zip -9r solution.zip ../PROGRAM ../PA1\ Student\ Data ../OUTPUT README.txt
+	zip -9r solution.zip ../PROGRAM ../PA1\ Student\ Data ../OUTPUT ../README.txt
 
 include depend.mak

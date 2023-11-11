@@ -90,10 +90,11 @@ int main(int argc, char **argv)
 
 std::vector<Matrix> matching(Mesh &mesh, std::vector<Matrix> q_ks)
 {
+
     std::vector<Matrix> closest_points = std::vector<Matrix>();
     for (int i = 0; i < (int)q_ks.size(); ++i)
     {
-        closest_points.push_back(mesh.find_closest_point(q_ks.at(i)));
+        closest_points.push_back(mesh.find_closest_point_advanced(q_ks.at(i)));
     }
     return closest_points;
 }

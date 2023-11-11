@@ -16,25 +16,21 @@
         int nnn, npn, npp, nnp, pnn, ppn, ppp, pnp;
         splitSort(nnn, npn, npp, nnp, pnn, ppn, ppp, pnp);
         BoundingSphere** ptr = spheres;
-        subtrees[0][0][0] = &BoundingBoxTreeNode(ptr,nnn);
+        subtrees[0][0][0] = new BoundingBoxTreeNode(ptr,nnn);
         ptr += nnn;
-        subtrees[0][1][0] = &BoundingBoxTreeNode(ptr,npn);
+        subtrees[0][1][0] = new BoundingBoxTreeNode(ptr,npn);
         ptr += npn;
-        subtrees[0][1][1] = &BoundingBoxTreeNode(ptr,npp);
+        subtrees[0][1][1] = new BoundingBoxTreeNode(ptr,npp);
         ptr += npp;
-        subtrees[0][0][1] = &BoundingBoxTreeNode(ptr,nnp);
+        subtrees[0][0][1] = new BoundingBoxTreeNode(ptr,nnp);
         ptr += nnp;
-        subtrees[1][0][0] = &BoundingBoxTreeNode(ptr,pnn);
+        subtrees[1][0][0] = new BoundingBoxTreeNode(ptr,pnn);
         ptr += pnn;
-        subtrees[1][1][0] = &BoundingBoxTreeNode(ptr,ppn);
+        subtrees[1][1][0] = new BoundingBoxTreeNode(ptr,ppn);
         ptr += ppn;
-        subtrees[1][1][1] = &BoundingBoxTreeNode(ptr,ppp);
+        subtrees[1][1][1] = new BoundingBoxTreeNode(ptr,ppp);
         ptr += ppp;
-        subtrees[1][0][1] = &BoundingBoxTreeNode(ptr,pnp);
-    }
-    
-    void BoundingBoxTreeNode::splitSort(int& nnn,  int& npn, int& npp, int& nnp, int& pnn, int& ppn, int& ppp, int& pnp){
-
+        subtrees[1][0][1] = new BoundingBoxTreeNode(ptr,pnp);
     }
 
     void BoundingBoxTreeNode::findClosestPoint(Matrix v, float &bound, Matrix &closest){
@@ -137,26 +133,50 @@
         LB = Matrix(minX, minY, minZ);
     }
 
-    void BoundingBoxTreeNode::splitSort(int& nnn,  int& npn, int& npp, int& nnp, int& pnn, int& ppn, int& ppp, int& pnp){
+    void BoundingBoxTreeNode::splitSort(int& nnn, int& npn, int& npp, int& nnp, int& pnn, int& ppn, int& ppp, int& pnp){
         int x, y, z;
+        int count[2][2][2];
         for(int i = 0; i < nSpheres; i++) {
-            float spherex = spheres[i]->getCenter().get_pos(0,0);
-            float spherey = spheres[i]->getCenter().get_pos(1,0);
-            float spherez = spheres[i]->getCenter().get_pos(2,0);
-            if(spherex < center.get_pos(0,0)) {
-                x = 0;
-            } else {
-                x = 1;
-            }
-            if(spherey < center.get_pos(1,0)) {
-                y = 0;
-            } else {
-                y = 1;
-            }
-            if(spherez < center.get_pos(2,0)) {
-                z = 0;
-            } else {
-                z = 1;
-            }
+            float spherex = spheres[i]->getCenter().get_pos(0, 0);
+            float spherey = spheres[i]->getCenter().get_pos(1, 0);
+            float spherez = spheres[i]->getCenter().get_pos(2, 0);
+            x = (spherex < center.get_pos(0, 0))? 0 : 1;
+            y = (spherey < center.get_pos(1, 0))? 0 : 1;
+            z = (spherez < center.get_pos(2, 0))? 0 : 1;
+            count[x][y][z]++;
+        }
+        nnn = count[0][0][0];
+        nnp = count[0][0][1];
+        npn = count[0][1][0];
+        npp = count[0][1][1];
+        pnn = count[1][0][0];
+        pnp = count[1][0][1];
+        ppn = count[1][1][0];
+        ppp = count[1][1][1];
+
+        int index[2][2][2];
+        int fill_in[2][2][2];
+        fill_in[0][1][0] = nnn;
+        fill_in[0][1][1] = fill_in[0][1][0] + npn;
+        fill_in[0][0][1] = fill_in[0][1][1] + npp;
+        fill_in[1][0][0] = fill_in[0][0][1] + nnp;
+        fill_in[1][1][0] = fill_in[1][0][0] + pnn;
+        fill_in[1][1][1] = fill_in[1][1][0] + ppn;
+        fill_in[1][0][1] = fill_in[1][1][1] + ppp;
+        int sum = 0;
+        BoundingSphere* cur = spheres[0];
+        BoundingSphere* copy;
+        while (sum < nSpheres) {
+            float spherex = cur ->getCenter().get_pos(0, 0);
+            float spherey = cur->getCenter().get_pos(1, 0);
+            float spherez = cur->getCenter().get_pos(2, 0);
+            x = (spherex < center.get_pos(0, 0))? 0 : 1;
+            y = (spherey < center.get_pos(1, 0))? 0 : 1;
+            z = (spherez < center.get_pos(2, 0))? 0 : 1;
+            copy = cur;
+            cur = spheres[index[x][y][z] + fill_in[x][y][z]];
+            spheres[index[x][y][z] + fill_in[x][y][z]] = copy;
+            index[x][y][z]++;
+            sum++;
         }
     }

@@ -32,3 +32,16 @@ Matrix Mesh::find_closest_point(Matrix mat)
     }
     return min_mat;
 }
+Matrix Mesh::find_closest_point_advanced(Matrix mat){
+    BoundingSphere** spheres;
+    int nSphere = 0;
+    for (int i = 0; i < m_num_triangles; i++){
+        BoundingSphere sphere(m_triangles.at(i));
+        spheres[nSphere] = &sphere;
+    }
+    BoundingBoxTreeNode node(spheres, nSphere);
+    Matrix closest;
+    float bound = INFINITY;
+    node.findClosestPoint(mat, bound, closest);
+    return closest;
+}

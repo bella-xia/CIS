@@ -13,7 +13,7 @@ class BoundingSphere{
      
     public:
        
-        BoundingSphere();
+        BoundingSphere() {}
         BoundingSphere(TriangleMesh tri);
         Matrix getCenter(){return center;}
         float getRadius() {return radius;}

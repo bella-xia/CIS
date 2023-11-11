@@ -46,6 +46,7 @@ public:
     ~Matrix();
 
     // operations described above
+    Matrix operator-(const Matrix &other) const;
     Matrix operator+(const Matrix &other) const;
     Matrix operator*(const Matrix &other) const;
     Matrix operator*(const float i) { return Matrix(mat * i); }

@@ -43,6 +43,10 @@ Matrix Matrix::operator*(const Matrix &other) const
 {
     return Matrix(mat * other.get());
 }
+Matrix Matrix::operator-(const Matrix &other) const
+{
+    return Matrix(mat - other.get());
+}
 
 Matrix Matrix::transpose() const
 {

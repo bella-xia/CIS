@@ -3,7 +3,6 @@
 
 #include "bounding_box_tree_node.h"
 
-
 class Mesh
 {
 private:
@@ -19,7 +18,7 @@ public:
                          int n_idx1, int n_idx2, int n_idx3, int v_idx1, int v_idx2, int v_idx3);
     Matrix get_vertex_at(int idx);
     Matrix find_closest_point(Matrix mat);
-    Matrix find_closest_point_advanced(Matrix mat);
+    std::vector<Matrix> find_closest_point_advanced(const std::vector<Matrix> &mat) const;
 };
 
 #endif

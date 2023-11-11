@@ -3,7 +3,7 @@
 #include "io_read.h"
 #include <iostream>
 
-std::vector<Matrix> matching(Mesh &mesh, std::vector<Matrix> q_ks);
+std::vector<Matrix> matching(Mesh &mesh, const std::vector<Matrix> &q_ks);
 
 int main(int argc, char **argv)
 {
@@ -88,13 +88,9 @@ int main(int argc, char **argv)
     // step 1 : read files
 }
 
-std::vector<Matrix> matching(Mesh &mesh, std::vector<Matrix> q_ks)
+std::vector<Matrix> matching(Mesh &mesh, const std::vector<Matrix> &q_ks)
 {
 
-    std::vector<Matrix> closest_points = std::vector<Matrix>();
-    for (int i = 0; i < (int)q_ks.size(); ++i)
-    {
-        closest_points.push_back(mesh.find_closest_point_advanced(q_ks.at(i)));
-    }
+    std::vector<Matrix> closest_points = mesh.find_closest_point_advanced(q_ks);
     return closest_points;
 }

@@ -1,4 +1,4 @@
-CXX_SRCS = matrix.cpp rotation.cpp position.cpp frame.cpp registration.cpp io_read.cpp bounding_sphere.cpp bounding_box_tree_node.cpp triangle_mesh.cpp mesh.cpp main_pa3.cpp
+CXX_SRCS = matrix.cpp rotation.cpp position.cpp frame.cpp registration.cpp io_read.cpp triangle_mesh.cpp bounding_sphere.cpp bounding_box_tree_node.cpp mesh.cpp main_pa3.cpp
 CXX_OBJS = $(CXX_SRCS:%.cpp=%.o)
 
 CXX_PA1_SRCS = matrix.cpp rotation.cpp position.cpp frame.cpp registration.cpp io_read.cpp main_pa1.cpp

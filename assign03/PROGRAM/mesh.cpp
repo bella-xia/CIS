@@ -22,8 +22,8 @@ Matrix Mesh::get_vertex_at(int idx)
 }
 
 Matrix Mesh::find_closest_point(Matrix mat)
-{  
-    Matrix min_mat;
+
+{    Matrix min_mat;
     float min_dist = INFINITY;
     for (int i = 0; i < m_num_triangles; i++)
     {   TriangleMesh trig = m_triangles.at(i);

@@ -26,10 +26,10 @@ int main(int argc, char **argv)
     std::string answer_path_name_2;
     std::string sample_str;
     if (idx < "G") {
-        answer_path_name_2 = "Debug_Output";
+        answer_path_name_2 = "-Debug_Output";
         sample_str = "-Debug-SampleReadingsTest.txt";
     } else {
-        answer_path_name_2 = "Unknown_Output";
+        answer_path_name_2 = "-Unknown_Output";
         sample_str = "-Unknown-SampleReadingsTest.txt";
     }
     std::string path_name = "";
@@ -75,7 +75,7 @@ int main(int argc, char **argv)
         Frame fb = fb_reg.point_cloud_registration();
         frames_aks.push_back(fa);
         frames_bks.push_back(fb);
-        d_ks.push_back(fb.inverse() * fa * ptr_a);
+        d_ks.push_back(fb.inverse() * (fa * ptr_a));
         fa_reg.clean_matrix_b();
         fb_reg.clean_matrix_b();
     }
@@ -109,11 +109,11 @@ int main(int argc, char **argv)
 std::vector<Matrix> matching(Mesh &mesh, const std::vector<Matrix> &q_ks)
 {
     // uncomment the block below to perform the simple search
-    /*std::vector<Matrix> closest_points;
+   /* std::vector<Matrix> closest_points;
     for(int i = 0; i < q_ks.size(); i++){
         closest_points.push_back(mesh.find_closest_point(q_ks.at(i)));
-    }*/
-
+    }
+*/
     std::vector<Matrix> closest_points = mesh.find_closest_point_advanced(q_ks);
     return closest_points;
 }
@@ -127,9 +127,9 @@ std::string formatLine( Matrix d, Matrix s){
     std::string sz = formatNum(s.get_pos(2,0));
     float mg = (d - s).magnitude();
     std::stringstream stream;
-    stream << std::fixed << std::setprecision(2) << mg;
+    stream << std::fixed << std::setprecision(3) << mg;
     std::string mg_string = stream.str();
-    return dx + dy + dz + " " + sx + sy + sz + " " + mg_string;
+    return dx + " " + dy + " " + dz + "  " + sx + " " + sy + " " + sz + "  " + mg_string;
 
 }
 
@@ -138,8 +138,9 @@ std::string formatNum(float a) {
     stream << std::fixed << std::setprecision(2) << a;
     std::string fill = "";
     std::string cur = stream.str();
-    for (int i = 0; i < 8 - cur.length(); i++){
+    
+    for (int i = 0; i < 7 - cur.length(); i++){
         fill += " ";
     }
-    return cur + fill;
+    return fill + cur;
 }

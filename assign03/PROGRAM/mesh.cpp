@@ -22,18 +22,19 @@ Matrix Mesh::get_vertex_at(int idx)
 }
 
 Matrix Mesh::find_closest_point(Matrix mat)
-{
+{  
     Matrix min_mat;
     float min_dist = INFINITY;
-    for (TriangleMesh trig : m_triangles)
-    {
+    for (int i = 0; i < m_num_triangles; i++)
+    {   TriangleMesh trig = m_triangles.at(i);
         std::tuple<float, Matrix> trig_find = trig.find_closest_point_in_triangle(mat);
-        // std::cout << "got here" << std::endl;
         float dist = std::get<0>(trig_find);
+        
         if (dist < min_dist)
-        {
+        {   
             min_dist = dist;
             min_mat = std::get<1>(trig_find);
+
         }
     }
     return min_mat;
@@ -41,13 +42,11 @@ Matrix Mesh::find_closest_point(Matrix mat)
 std::vector<Matrix> Mesh::find_closest_point_advanced(const std::vector<Matrix> &mat) const
 {
     BoundingSphere **spheres = new BoundingSphere *[m_num_triangles];
-    std::cout << "number triangles: " << m_num_triangles << std::endl;
     int nSphere = 0;
     for (int i = 0; i < m_num_triangles; i++)
     {
         spheres[nSphere++] = new BoundingSphere(m_triangles.at(i));
     }
-    std::cout << "finsih filling with " << nSphere << " spheres" << std::endl;
     BoundingBoxTreeNode node(spheres, nSphere);
     std::vector<Matrix> closests;
     for (int i = 0; i < (int)mat.size(); ++i)

@@ -103,16 +103,16 @@ int main(int argc, char **argv)
         }
         out_file.close();
     }
-    /*
-    for (Matrix ele : output)
-    {
-        ele.print_str();
-    }*/
 
 }
 
 std::vector<Matrix> matching(Mesh &mesh, const std::vector<Matrix> &q_ks)
 {
+    // uncomment the block below to perform the simple search
+    /*std::vector<Matrix> closest_points;
+    for(int i = 0; i < q_ks.size(); i++){
+        closest_points.push_back(mesh.find_closest_point(q_ks.at(i)));
+    }*/
 
     std::vector<Matrix> closest_points = mesh.find_closest_point_advanced(q_ks);
     return closest_points;

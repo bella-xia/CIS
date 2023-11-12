@@ -5,6 +5,7 @@
 
 class Mesh
 {
+    
 private:
     std::vector<Matrix> m_vertices;
     std::vector<TriangleMesh> m_triangles;

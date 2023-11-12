@@ -54,9 +54,9 @@ std::vector<Matrix> Mesh::find_closest_point_advanced(const std::vector<Matrix> 
     {
         closests.push_back(Matrix(3, 1));
     }
-    float bound = INFINITY;
     for (int i = 0; i < (int)mat.size(); ++i)
     {
+        float bound = INFINITY;
         node.findClosestPoint(mat.at(i), bound, closests.at(i));
     }
     return closests;

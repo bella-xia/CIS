@@ -128,13 +128,12 @@ void read_helper(std::ifstream &in_file, std::vector<std::vector<float>> &data, 
     }
 }
 
+//read ProblemXMesh.sur
 void p3_read_mesh(std::string file_name, Mesh &mesh)
 {
     std::ifstream in_file(file_name);
-    // std::ifstream in_file(file_name, std::ios::binary);
     std::string in_line;
-    // this is used to read the first three integers
-    int n_v;
+    int n_v; //num vertices
     float v1, v2, v3;
     std::getline(in_file, in_line);
     std::stringstream(in_line) >> n_v;
@@ -144,7 +143,7 @@ void p3_read_mesh(std::string file_name, Mesh &mesh)
         std::stringstream(in_line) >> v1 >> v2 >> v3;
         mesh.insert_vertex(v1, v2, v3);
     }
-    int n_tr;
+    int n_tr; //num triangles
     int v_idx1, v_idx2, v_idx3, n_idx1, n_idx2, n_idx3;
     std::getline(in_file, in_line);
     std::stringstream(in_line) >> n_tr;
@@ -158,6 +157,7 @@ void p3_read_mesh(std::string file_name, Mesh &mesh)
     in_file.close();
 }
 
+//read ProblemX-BodyY file
 Matrix p3_read_body(std::string file_name, std::vector<Matrix> &marker)
 {
     std::ifstream in_file;
@@ -179,12 +179,12 @@ Matrix p3_read_body(std::string file_name, std::vector<Matrix> &marker)
     return Matrix(v1, v2, v3);
 }
 
+// read the SampleReading files
 void p3_read_sample(std::string file_name, std::vector<f_data> &frames, int n_a, int n_b)
 {
     std::ifstream in_file;
     in_file.open(file_name);
     std::string in_line;
-    // this is used to read the first three integers
     int n_s, n_f;
     char garbage;
     std::getline(in_file, in_line);
@@ -193,12 +193,12 @@ void p3_read_sample(std::string file_name, std::vector<f_data> &frames, int n_a,
     {
         f_data frame;
         frame.list = std::vector<char>();
-        frame.list.push_back('d');
+        frame.list.push_back('d'); 
         frame.list.push_back('a');
         frame.list.push_back('b');
         frame.data_a = std::vector<std::vector<float>>();
         frame.data_b = std::vector<std::vector<float>>();
-        frame.data_d = std::vector<std::vector<float>>();
+        frame.data_d = std::vector<std::vector<float>>(); //dummy markers
 
         read_helper(in_file, frame.data_a, n_a);
         read_helper(in_file, frame.data_b, n_b);

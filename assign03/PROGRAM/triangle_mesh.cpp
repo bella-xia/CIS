@@ -29,20 +29,21 @@ std::tuple<float, Matrix> TriangleMesh::find_closest_point_in_triangle(Matrix ma
     float lambda = result.get_pos(0, 0);
     float mu = result.get_pos(1, 0);
     float v = result.get_pos(2, 0);
-    if (lambda >= 0 && mu >= 0 && v >= 0)
+
+    bool lambda_is_neg = lambda < 0;
+    bool mu_is_neg = mu < 0;
+    bool v_is_neg = v < 0;
+
+    // if the point is inside the triangle.
+    if (!lambda_is_neg && !mu_is_neg && !v_is_neg)
     {
         Matrix closest = m_coords.at(0) * lambda + m_coords.at(1) * mu + m_coords.at(2) * v;
         float dist = (closest - mat).magnitude();
         return std::make_tuple(dist, closest);
     }
-    bool lambda_is_neg = lambda < 0;
-    bool mu_is_neg = mu < 0;
-    bool v_is_neg = v < 0;
-
-    // vertex 1's opposite side
+    
     if (lambda_is_neg)
     {
-       
         if (mu_is_neg)
         {
             // cross between vertex 1 and 2 --> vertex 3
@@ -75,22 +76,27 @@ std::tuple<float, Matrix> TriangleMesh::find_closest_point_in_triangle(Matrix ma
 
 Matrix TriangleMesh::get_bary(Matrix mat)
 {   
-    /*
-    Eigen::MatrixXf triangle_vertices = Eigen::MatrixXf::Zero(3, 3);
-    Matrix q_p = m_coords.at(0) - m_coords.at(2);
-    Matrix r_p = m_coords.at(1) - m_coords.at(2);
-    Matrix p = m_coords.at(2);
-    for (int i = 0; i < 3; i++) {
-        triangle_vertices(i, 0) = q_p.get_pos(i, 0);
-        triangle_vertices(i, 1) = r_p.get_pos(i, 0);
-        triangle_vertices(i, 2) = p.get_pos(i, 0);
-    }
-    auto svd_1 = triangle_vertices.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV);
-    Eigen::MatrixXf m_t = svd_1.solve((mat).get());
-    return Matrix(m_t(0, 0), m_t(1, 0), 1.0 - m_t(0, 0) - m_t(1, 0));
+    /** According to the Barycentric Form:
+     * c = lambda * q + mu * r + v * p, where:
+     * 1. lambda + mu + v = 1
+     * 2. q, r, p are the three coordinates, c is the closest point
+     *    if lambda >= 0, mu >= 0, v >= 0
+     * 
+     * According to 1, v = 1 - lambda - mu.
+     * Rearranging the equation, we get:
+     * c = lambda * (q - p) + mu * (r - p) + p
+     * c - p = lambda * (q - p) + mu * (r - p)
+     * 
+     * Then, we can construct the least square problem:
+     * | c_x - p_x |   |q_x - p_x, r_x - p_x|   | lambda |
+     * | c_y - p_y | = |q_y - p_y, r_y - p_y| * |   mu   |
+     * | c_z - p_z |   |q_z - p_z, r_z - p_z|
+     * 
+     * to solve for lambda and mu.
     */
-    
     Eigen::MatrixXf triangle_vertices = Eigen::MatrixXf::Zero(3, 2);
+    
+    //construct the middle matrix
     for (int i = 0; i < 2; ++i)
     {
         Matrix difference = m_coords.at(i) - m_coords.at(2);
@@ -99,7 +105,10 @@ Matrix TriangleMesh::get_bary(Matrix mat)
         triangle_vertices(2, i) = difference.get_pos(2, 0);
     }
     auto svd_1 = triangle_vertices.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV);
-    Eigen::MatrixXf m_t = svd_1.solve((mat + m_coords.at(2) * -1).get());
+    
+    //construct the left matrix and solve for lambda and mu
+    Eigen::MatrixXf m_t = svd_1.solve((mat - m_coords.at(2)).get());
+
     return Matrix(m_t(0, 0), m_t(1, 0), 1.0 - m_t(0, 0) - m_t(1, 0));
     
 }
@@ -133,13 +142,5 @@ std::tuple<float, Matrix> TriangleMesh::get_project(Matrix &target_mat, int vert
 
     float distance = (P - A).magnitude();
     return std::make_tuple(distance, P);
-    /*
-    Matrix direction_vector = m_coords.at(vertex_idx1) - m_coords.at(vertex_idx2);
-    direction_vector = direction_vector * (1.0 / direction_vector.magnitude());
-    Matrix path = target_mat - m_coords.at(vertex_idx2);
-    Matrix displace = path.transpose() * direction_vector;
-    assert(displace.get_col() == 1 && displace.get_row() == 1);
-    Matrix projected = m_coords.at(vertex_idx2) + (direction_vector * displace.get_pos(0, 0));
-    return std::make_tuple((projected - target_mat).magnitude(), projected);
-    */
+    
 }

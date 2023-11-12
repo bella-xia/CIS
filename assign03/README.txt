@@ -12,8 +12,8 @@ for our implementation is eigen-3.4.0
 Instruction: 
 To run the excutable on rebug or unknown data provided, type the following line in terminal:
     ./cis index
-where index is a to k. When index is between a-g, the algorithm reads debug data; 
-when index is between h-k, the algorithm reads unknown data.
+where index is A to H and K. When index is between A-F, the algorithm reads debug data; 
+when index is between G, H ,and K, the algorithm reads unknown data.
 
 To run the excutable on other source files, type the following line in terminal:
     ./cis other
@@ -41,10 +41,28 @@ Implemente the point cloud registration and pivot calibration operation.
 6. interpolation.h, interpolation.cpp
 Implemented the distortion correction function calculation and application.
 
-7. io_read.h, io_read.cpps
-Implemente methods for reading data from 4 types of file. Define f_data struct to store data of each frame. 
+7. io_read.h, io_read.cpp
+Implemented methods for reading data from 8 types of file. Define f_data struct to store data of each frame. 
 
-8. main.cpp
+8. triangle_mesh.h, triangle_mesh.cpp
+Implemented triangleMesh class to store a triangle. It calculates the closest point on
+the triangle respect to a given point.
+
+9. bounding_sphere.h, bounding_sphere.cpp
+Implemented boundingSphere class to store the smallest sphere that contains a given triangle. 
+It determines whether it is possible for the triangle inside to contain a closer point to a 
+given matrix than a given bound.
+
+10. bounding_box_tree_node.h, bounding_box_tree_node.cpp
+Implemented boundingBoxTreeNode class to perform a more efficient bounding box search. 
+It ignores all triangles that is impossible to contain a distance to a given matrix smaller than
+the given bound.
+
+11. mesh.h, mesh.cpp
+Implemented the Mesh class that store all triangles and find the closest points among all the
+triangles respect to a given point.
+
+12. main.cpp
 Produce runable file to calculate the EM distortion correction calculation and  and perform pivot calibration.
 
 Unit Tests:

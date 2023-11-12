@@ -21,7 +21,8 @@ int main(int argc, char **argv)
     std::vector<Matrix> body_b = std::vector<Matrix>();
     std::vector<f_data> sample_reading = std::vector<f_data>();
     Mesh mesh;
-
+    
+    // define the path name.
     std::string answer_path_name = "../OUTPUT/PA3-";
     std::string answer_path_name_2;
     std::string sample_str;
@@ -40,18 +41,24 @@ int main(int argc, char **argv)
     std::string body_b_str = "../DATA/Problem3-BodyB.txt";
     std::string mesh_str = "../DATA/Problem3Mesh.sur";
 
+    //read files
     Matrix ptr_a = p3_read_body(body_a_str, body_a);
     p3_read_body(body_b_str, body_b);
     p3_read_mesh(mesh_str, mesh);
     p3_read_sample(debug_path_name + idx + sample_str, sample_reading, (int)body_a.size(), (int)body_b.size());
 
+    // registration to calculate F_A
     Registration fa_reg = Registration();
+    // registration to calculate F_B
     Registration fb_reg = Registration();
+    // vectors to store dk
     std::vector<Matrix> d_ks = std::vector<Matrix>();
+    // F_A in each frame
     std::vector<Frame> frames_aks = std::vector<Frame>();
+    // F_B in each frame
     std::vector<Frame> frames_bks = std::vector<Frame>();
 
-    // pass in a and d and c vectors
+    // pass in a and b vectors in body frame
     for (int i = 0; i < (int)body_a.size(); ++i)
     {
         fa_reg.add_matrix_a(body_a[i]);
@@ -60,6 +67,7 @@ int main(int argc, char **argv)
     {
         fb_reg.add_matrix_a(body_b[i]);
     }
+    // perform point cloud registration to find the Fa and Fb
     for (int frame_num = 0; frame_num < (int)sample_reading.size(); ++frame_num)
     {
 
@@ -75,27 +83,34 @@ int main(int argc, char **argv)
         Frame fb = fb_reg.point_cloud_registration();
         frames_aks.push_back(fa);
         frames_bks.push_back(fb);
+
+        // calculate the corresponding d and store them.
         d_ks.push_back(fb.inverse() * (fa * ptr_a));
+
         fa_reg.clean_matrix_b();
         fb_reg.clean_matrix_b();
     }
 
+    // Freg = I
     Frame reg = Frame();
 
+    // calculate s = Freg * d
     std::vector<Matrix> s_ks = std::vector<Matrix>();
     for (Matrix ele : d_ks)
     {
         s_ks.push_back(reg * ele);
     }
 
+    // calculate the closest points respect to s.
     std::vector<Matrix> output = matching(mesh, s_ks);
 
+    // output results
     std::string output_filename = answer_path_name + idx + answer_path_name_2;
     std::ofstream out_file(output_filename);
     if (out_file.is_open())
     {
         out_file << (int)sample_reading.size() << ", " << output_filename << std::endl;
-        for (int frame_num; frame_num < (int)sample_reading.size(); ++frame_num)
+        for (int frame_num = 0; frame_num < (int)sample_reading.size(); ++frame_num)
         {
             
             std::string output_line = formatLine(d_ks[frame_num], output[frame_num]);
@@ -103,7 +118,6 @@ int main(int argc, char **argv)
         }
         out_file.close();
     }
-
 }
 
 std::vector<Matrix> matching(Mesh &mesh, const std::vector<Matrix> &q_ks)

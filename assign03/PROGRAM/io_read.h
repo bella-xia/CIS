@@ -69,10 +69,24 @@ void read_ct_fi(std::string file_name, std::vector<std::vector<float>> &data_b);
  */
 void read_helper(std::ifstream &in_file, std::vector<std::vector<float>> &data, int num_read);
 
+/**
+ * @param file_name the input file name (ProblemXMesh.sur)
+ * @param mesh where the data will read into
+ */
 void p3_read_mesh(std::string file_name, Mesh &mesh);
 
+/**
+ * @param file_name the input file name (paV-X-ddddd-SampleReadings.txt)
+ * @param frames where the data will read into
+ * @param n_a number of a markers
+ * @param n_b number of b markers
+ */
 void p3_read_sample(std::string file_name, std::vector<f_data> &frames, int n_a, int n_b);
 
+/**
+ * @param file_name the input file name (ProblemX-BodyY)
+ * @param mesh where the data will read into
+ */
 Matrix p3_read_body(std::string file_name, std::vector<Matrix> &marker);
 
 #endif

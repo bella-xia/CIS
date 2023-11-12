@@ -23,40 +23,56 @@ Matrix Mesh::get_vertex_at(int idx)
 
 Matrix Mesh::find_closest_point(Matrix mat)
 
-{    Matrix min_mat;
-    float min_dist = INFINITY;
+{   Matrix min_mat; // closest point
+    float min_dist = INFINITY; // bound
+
+    //loop through all triangles to find the closest point
     for (int i = 0; i < m_num_triangles; i++)
     {   TriangleMesh trig = m_triangles.at(i);
         std::tuple<float, Matrix> trig_find = trig.find_closest_point_in_triangle(mat);
         float dist = std::get<0>(trig_find);
-        
-        if (dist < min_dist)
+
+        // update the bound and closest point if the current one is closer to the
+        // target than the original closest point.
+        if (dist < min_dist) 
         {   
             min_dist = dist;
             min_mat = std::get<1>(trig_find);
-
         }
     }
+
     return min_mat;
 }
+
 std::vector<Matrix> Mesh::find_closest_point_advanced(const std::vector<Matrix> &mat) const
 {
+    // allocate space for an array of BoundingSphere pointers.
     BoundingSphere **spheres = new BoundingSphere *[m_num_triangles];
     int nSphere = 0;
+
     for (int i = 0; i < m_num_triangles; i++)
     {
         spheres[nSphere++] = new BoundingSphere(m_triangles.at(i));
     }
+
+    //construct BoundingBoxTreeNode
     BoundingBoxTreeNode node(spheres, nSphere);
+
+    // vectors to store the closest point to each target matrix.
     std::vector<Matrix> closests;
+
+    // initialize the closest point for each target matrix.
     for (int i = 0; i < (int)mat.size(); ++i)
     {
         closests.push_back(Matrix(3, 1));
     }
+
+    // find the closest point in eahc target matrix using the bounding box search
     for (int i = 0; i < (int)mat.size(); ++i)
     {
         float bound = INFINITY;
         node.findClosestPoint(mat.at(i), bound, closests.at(i));
     }
+    
     return closests;
 }

@@ -12,9 +12,12 @@ BoundingSphere::BoundingSphere(TriangleMesh tri) : center(Matrix(3, 1)), m_idx(1
     Matrix c = tri.get_coord_at(2);
     Matrix q = calculateCenter(a, b, c);
     center = q;
-    float qa = (q - a).magnitude();
-    float qb = (q - b).magnitude();
-    float qc = (q - c).magnitude();
+
+    float qa = (q - a).magnitude(); //qa = ||q - a||
+    float qb = (q - b).magnitude(); //qb = ||q - b||
+    float qc = (q - c).magnitude(); //qc = ||q - c||
+
+    // set the longest of qa, qb, qc to be the radius.
     if (qa > qb && qa > qc)
     {
         radius = qa;
@@ -27,31 +30,20 @@ BoundingSphere::BoundingSphere(TriangleMesh tri) : center(Matrix(3, 1)), m_idx(1
     {
         radius = qc;
     }
-    // std::cout << radius << std::endl;
-}
-
-Matrix BoundingSphere::getCenter()
-{
-    // std::cout << "got here" << std::endl;
-    // std::cout << "center dimension:" << center.get_col() << ", " << center.get_row() << std::endl;
-    // Matrix returns(center.get());
-    // center.print_str();
-    // std::cout << "trying to get triangle" << std::endl;
-    // triangle.get_coord_at(0).print_str();
-    // std::cout << "end get triangle" << std::endl;
-    // std::cout << "index:  " << m_idx << std::endl;
-    // std::cout << "trying to get radius" << std::endl;
-    // std::cout << "get radius: " << getRadius() << std::endl;
-    // std::cout << "end getting radius" << std::endl;
-    return center;
 }
 
 bool BoundingSphere::isCenter(Matrix a, Matrix b, Matrix c, Matrix q)
-{
-    float b_q = (((b - q)).transpose() * (b - q)).get_pos(0, 0);
-    float a_q = (((a - q)).transpose() * (a - q)).get_pos(0, 0);
-    float c_q = ((c - q).transpose() * (c - q)).get_pos(0, 0);
-    float m = ((b - a).cross(c - a).transpose() * (q - a)).get_pos(0, 0);
+{   
+    /** 
+     * If a-b is the longest edge and q is the center of the sphere, it must satisfy:
+     * 1. (b - q) * (b - q) = (a - q) * (a - q)
+     * 2. (c - q) * (c - q) <= (a - q) * (a - q)
+     * 3. (b - a) x (c - a) * (q - a) = 0
+    */
+    float b_q = (((b - q)).transpose() * (b - q)).get_pos(0, 0); // calculate 1 left
+    float a_q = (((a - q)).transpose() * (a - q)).get_pos(0, 0); // calculate 1 & 2 right
+    float c_q = ((c - q).transpose() * (c - q)).get_pos(0, 0); // calculate 2 left
+    float m = ((b - a).cross(c - a).transpose() * (q - a)).get_pos(0, 0); // calculate 3 left
     return (b_q == a_q && c_q <= a_q && m == 0);
 }
 
@@ -61,7 +53,8 @@ Matrix BoundingSphere::calculateCenter(Matrix a1, Matrix b1, Matrix c1)
     Matrix a = edges[0];
     Matrix b = edges[1];
     Matrix c = edges[2];
-    Matrix f = (a + b) * 0.5;
+    // check whether the midpoint of a-b is the center.
+    Matrix f = (a + b) * 0.5; 
 
     if (isCenter(a, b, c, f))
     {

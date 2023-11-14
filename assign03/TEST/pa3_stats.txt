@@ -1,0 +1,48 @@
+file A:
+Error mean for closest point with registration process: -0.00133327
+Error standard deviation for closest point with registration process: 0.00452147
+Error mean without for closest point registration process: 0.000222206
+Error standard deviation for closest point without registration process: 0.00147395
+Error mean for registration process: -0.00177777
+Error standard deviation for registration process: 0.00436597
+
+file B:
+Error mean for closest point with registration process: 0.0206666
+Error standard deviation for closest point with registration process: 0.139322
+Error mean without for closest point registration process: 0.0215557
+Error standard deviation for closest point without registration process: 0.139203
+Error mean for registration process: -0.00133337
+Error standard deviation for registration process: 0.00452158
+
+file C:
+Error mean for closest point with registration process: -0.00133338
+Error standard deviation for closest point with registration process: 0.00400013
+Error mean without for closest point registration process: 0.000666608
+Error standard deviation for closest point without registration process: 0.00442218
+Error mean for registration process: -0.00133328
+Error standard deviation for registration process: 0.00541594
+
+file D:
+Error mean for closest point with registration process: -0.0308889
+Error standard deviation for closest point with registration process: 0.298029
+Error mean without for closest point registration process: -0.0299999
+Error standard deviation for closest point without registration process: 0.299562
+Error mean for registration process: 0.00044438
+Error standard deviation for registration process: 0.00697793
+
+file E:
+Error mean for closest point with registration process: 0.0131111
+Error standard deviation for closest point with registration process: 0.0982248
+Error mean without for closest point registration process: 0.000666687
+Error standard deviation for closest point without registration process: 0.00388738
+Error mean for registration process: 0.0415555
+Error standard deviation for registration process: 0.140427
+
+file F:
+Error mean for closest point with registration process: 0.00977773
+Error standard deviation for closest point with registration process: 0.210897
+Error mean without for closest point registration process: 0.0228889
+Error standard deviation for closest point without registration process: 0.177258
+Error mean for registration process: -0.0348887
+Error standard deviation for registration process: 0.145015
+

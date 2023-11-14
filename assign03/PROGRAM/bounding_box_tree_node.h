@@ -5,13 +5,13 @@
 
 /**
  * CITATION: This class is created basing on the "finding point-pairs" slides.
- * This class build a boudning box searching tree node, increasing the 
+ * This class build a boudning box searching tree node, increasing the
  * efficiency of searching by ignoring the whole box completely if its
  * closest distance is longer than the current closest distance.
  * This class contains:
  * All BoundingSpheres inside the box;
  * The subtrees;
-*/
+ */
 class BoundingBoxTreeNode
 {
 private:
@@ -22,15 +22,16 @@ private:
     Matrix LB; // lower bound
     bool haveSubtrees = false;
     int nSpheres = 0;
+    bool m_iter = false;
     float maxRadius = -1;
 
-    int minCount = 3; // minimum trees required to construct subtrees
+    int minCount = 3;  // minimum trees required to construct subtrees
     float minDiag = 3; // minimum diagonal required to construct subtree
 
     BoundingBoxTreeNode *subtrees[2][2][2];
     BoundingSphere **spheres;
 
-    /* Calculate the new splitting point by getting the mean x,y,z of 
+    /* Calculate the new splitting point by getting the mean x,y,z of
      * the center of all spheres*/
     void calculateCenter();
 
@@ -51,7 +52,9 @@ public:
     BoundingBoxTreeNode();
 
     /* Construct the BoundingBoxTreeNode basing on the BoundingSpheres and sphere num.*/
-    BoundingBoxTreeNode(BoundingSphere **BS, int sphereNum);
+    BoundingBoxTreeNode(BoundingSphere **BS, int sphereNum, bool iter);
+
+    ~BoundingBoxTreeNode();
 
     /* Construct subtrees if  minCount and diagnol length */
     void constructSubtrees();

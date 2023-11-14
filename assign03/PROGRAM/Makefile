@@ -1,11 +1,20 @@
 CXX_SRCS = matrix.cpp rotation.cpp position.cpp frame.cpp registration.cpp io_read.cpp triangle_mesh.cpp bounding_sphere.cpp bounding_box_tree_node.cpp mesh.cpp main_pa3.cpp
 CXX_OBJS = $(CXX_SRCS:%.cpp=%.o)
 
+CXX_PA3_STATS_SRCS = pa3_comp_stats.cpp
+CXX_PA3_STATS_OBJS = $(CXX_PA3_STATS_SRCS:%.cpp=%.o)
+
+CXX_PA3_TEST_SRCS = matrix.cpp triangle_mesh.cpp bounding_sphere.cpp bounding_box_tree_node.cpp mesh.cpp io_read.cpp pa3_result_without_regis.cpp
+CXX_PA3_TEST_OBJS = $(CXX_PA3_TEST_SRCS:%.cpp=%.o)
+
 CXX_PA1_SRCS = matrix.cpp rotation.cpp position.cpp frame.cpp registration.cpp io_read.cpp main_pa1.cpp
 CXX_PA1_OBJS = $(CXX_PA1_SRCS:%.cpp=%.o)
 
 CXX_PA2_SRCS = matrix.cpp rotation.cpp position.cpp frame.cpp registration.cpp io_read.cpp interpolation.cpp main_pa2.cpp
 CXX_PA2_OBJS = $(CXX_PA2_SRCS:%.cpp=%.o)
+
+CXX_MESH_SRCS = matrix.cpp triangle_mesh.cpp bounding_sphere.cpp bounding_box_tree_node.cpp mesh.cpp _mesh_test.cpp
+CXX_MESH_OBJS = $(CXX_MESH_SRCS:%.cpp=%.o)
 
 CXX_MATRIX_SRCS = matrix.cpp  _matrix_test.cpp
 CXX_MATRIX_OBJS = $(CXX_MATRIX_SRCS:%.cpp=%.o)
@@ -84,14 +93,22 @@ ct: $(CXX_CT_OBJS)
 ct2: $(CXX_CTTWO_OBJS)
 	$(CXX) -o $@ $(CXX_CTTWO_OBJS)
 
+mesh: $(CXX_MESH_OBJS)
+	$(CXX) -o $@ $(CXX_MESH_OBJS)
+
 pa1: $(CXX_PA1_OBJS)
 	$(CXX) -o $@ $(CXX_PA1_OBJS)
 
 pa2: $(CXX_PA2_OBJS)
 	$(CXX) -o $@ $(CXX_PA2_OBJS)
 
+pa3-test: $(CXX_PA3_TEST_OBJS)
+	$(CXX) -o $@ $(CXX_PA3_TEST_OBJS)
+
+pa3-stats: $(CXX_PA3_STATS_OBJS)
+	$(CXX) -o $@ $(CXX_PA3_STATS_OBJS)
 clean :
-	rm -f *.o matrix frame regis cis calone caltwo io err comp pa1 pa2 interp ct ct2 depend.mak
+	rm -f *.o matrix frame regis cis calone caltwo io err comp pa1 pa2 pa3-test pa3-stats interp mesh ct ct2 depend.mak
 
 depend :
 	$(CXX) $(CXXFLAGS) -M $(CXX_SRCS) >> depend.mak

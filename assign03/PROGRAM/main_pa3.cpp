@@ -2,6 +2,7 @@
 #include "registration.h"
 #include "io_read.h"
 #include <iostream>
+#include <iomanip>
 
 std::vector<Matrix> matching(Mesh &mesh, const std::vector<Matrix> &q_ks);
 std::string formatLine(Matrix d, Matrix s);
@@ -13,7 +14,7 @@ int main(int argc, char **argv)
     std::string idx = argv[1];
     if (argc > 1)
     {
-        idx = argv[1]; 
+        idx = argv[1];
     }
 
     // create structures to store data
@@ -21,16 +22,19 @@ int main(int argc, char **argv)
     std::vector<Matrix> body_b = std::vector<Matrix>();
     std::vector<f_data> sample_reading = std::vector<f_data>();
     Mesh mesh;
-    
+
     // define the path name.
     std::string answer_path_name = "../OUTPUT/PA3-";
     std::string answer_path_name_2;
     std::string sample_str;
-    if (idx < "G") {
-        answer_path_name_2 = "-Debug_Output";
+    if (idx < "G")
+    {
+        answer_path_name_2 = "-Debug_Output.txt";
         sample_str = "-Debug-SampleReadingsTest.txt";
-    } else {
-        answer_path_name_2 = "-Unknown_Output";
+    }
+    else
+    {
+        answer_path_name_2 = "-Unknown_Output.txt";
         sample_str = "-Unknown-SampleReadingsTest.txt";
     }
     std::string path_name = "";
@@ -41,7 +45,7 @@ int main(int argc, char **argv)
     std::string body_b_str = "../DATA/Problem3-BodyB.txt";
     std::string mesh_str = "../DATA/Problem3Mesh.sur";
 
-    //read files
+    // read files
     Matrix ptr_a = p3_read_body(body_a_str, body_a);
     p3_read_body(body_b_str, body_b);
     p3_read_mesh(mesh_str, mesh);
@@ -112,9 +116,9 @@ int main(int argc, char **argv)
         out_file << (int)sample_reading.size() << ", " << output_filename << std::endl;
         for (int frame_num = 0; frame_num < (int)sample_reading.size(); ++frame_num)
         {
-            
+
             std::string output_line = formatLine(d_ks[frame_num], output[frame_num]);
-            out_file << output_line <<"\n";
+            out_file << output_line << "\n";
         }
         out_file.close();
     }
@@ -123,37 +127,39 @@ int main(int argc, char **argv)
 std::vector<Matrix> matching(Mesh &mesh, const std::vector<Matrix> &q_ks)
 {
     // uncomment the block below to perform the simple search
-   /* std::vector<Matrix> closest_points;
-    for(int i = 0; i < q_ks.size(); i++){
-        closest_points.push_back(mesh.find_closest_point(q_ks.at(i)));
-    }
-*/
+    /* std::vector<Matrix> closest_points;
+     for(int i = 0; i < q_ks.size(); i++){
+         closest_points.push_back(mesh.find_closest_point(q_ks.at(i)));
+     }
+ */
     std::vector<Matrix> closest_points = mesh.find_closest_point_advanced(q_ks);
     return closest_points;
 }
 
-std::string formatLine( Matrix d, Matrix s){
-    std::string dx = formatNum(d.get_pos(0,0));
-    std::string dy = formatNum(d.get_pos(1,0));
-    std::string dz = formatNum(d.get_pos(2,0));
-    std::string sx = formatNum(s.get_pos(0,0));
-    std::string sy = formatNum(s.get_pos(1,0));
-    std::string sz = formatNum(s.get_pos(2,0));
+std::string formatLine(Matrix d, Matrix s)
+{
+    std::string dx = formatNum(d.get_pos(0, 0));
+    std::string dy = formatNum(d.get_pos(1, 0));
+    std::string dz = formatNum(d.get_pos(2, 0));
+    std::string sx = formatNum(s.get_pos(0, 0));
+    std::string sy = formatNum(s.get_pos(1, 0));
+    std::string sz = formatNum(s.get_pos(2, 0));
     float mg = (d - s).magnitude();
     std::stringstream stream;
     stream << std::fixed << std::setprecision(3) << mg;
     std::string mg_string = stream.str();
     return dx + " " + dy + " " + dz + "  " + sx + " " + sy + " " + sz + "  " + mg_string;
-
 }
 
-std::string formatNum(float a) {
+std::string formatNum(float a)
+{
     std::stringstream stream;
     stream << std::fixed << std::setprecision(2) << a;
     std::string fill = "";
     std::string cur = stream.str();
-    
-    for (int i = 0; i < 7 - cur.length(); i++){
+
+    for (int i = 0; i < 7 - (int)cur.length(); i++)
+    {
         fill += " ";
     }
     return fill + cur;

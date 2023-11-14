@@ -22,9 +22,13 @@ TriangleMesh::TriangleMesh(Matrix mat1, Matrix mat2, Matrix mat3,
     m_vertex_index.push_back(vertex_idx3);
 }
 
+TriangleMesh::~TriangleMesh()
+{
+}
+
 std::tuple<float, Matrix> TriangleMesh::find_closest_point_in_triangle(Matrix mat)
 {
-    
+
     Matrix result = get_bary(mat);
     float lambda = result.get_pos(0, 0);
     float mu = result.get_pos(1, 0);
@@ -41,7 +45,7 @@ std::tuple<float, Matrix> TriangleMesh::find_closest_point_in_triangle(Matrix ma
         float dist = (closest - mat).magnitude();
         return std::make_tuple(dist, closest);
     }
-    
+
     if (lambda_is_neg)
     {
         if (mu_is_neg)
@@ -75,28 +79,28 @@ std::tuple<float, Matrix> TriangleMesh::find_closest_point_in_triangle(Matrix ma
 }
 
 Matrix TriangleMesh::get_bary(Matrix mat)
-{   
+{
     /** According to the Barycentric Form:
      * c = lambda * q + mu * r + v * p, where:
      * 1. lambda + mu + v = 1
      * 2. q, r, p are the three coordinates, c is the closest point
      *    if lambda >= 0, mu >= 0, v >= 0
-     * 
+     *
      * According to 1, v = 1 - lambda - mu.
      * Rearranging the equation, we get:
      * c = lambda * (q - p) + mu * (r - p) + p
      * c - p = lambda * (q - p) + mu * (r - p)
-     * 
+     *
      * Then, we can construct the least square problem:
      * | c_x - p_x |   |q_x - p_x, r_x - p_x|   | lambda |
      * | c_y - p_y | = |q_y - p_y, r_y - p_y| * |   mu   |
      * | c_z - p_z |   |q_z - p_z, r_z - p_z|
-     * 
+     *
      * to solve for lambda and mu.
-    */
+     */
     Eigen::MatrixXf triangle_vertices = Eigen::MatrixXf::Zero(3, 2);
-    
-    //construct the middle matrix
+
+    // construct the middle matrix
     for (int i = 0; i < 2; ++i)
     {
         Matrix difference = m_coords.at(i) - m_coords.at(2);
@@ -105,16 +109,15 @@ Matrix TriangleMesh::get_bary(Matrix mat)
         triangle_vertices(2, i) = difference.get_pos(2, 0);
     }
     auto svd_1 = triangle_vertices.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV);
-    
-    //construct the left matrix and solve for lambda and mu
+
+    // construct the left matrix and solve for lambda and mu
     Eigen::MatrixXf m_t = svd_1.solve((mat - m_coords.at(2)).get());
 
     return Matrix(m_t(0, 0), m_t(1, 0), 1.0 - m_t(0, 0) - m_t(1, 0));
-    
 }
 
 std::tuple<float, Matrix> TriangleMesh::get_project(Matrix &target_mat, int vertex_idx1, int vertex_idx2)
-{   
+{
     /* Reference: https://math.stackexchange.com/questions/1905533/find-perpendicular-distance-from-point-to-line-in-3d*/
     // let A be the target mat, BC be the edge, P be the projected point of A on BC
     /**
@@ -123,11 +126,11 @@ std::tuple<float, Matrix> TriangleMesh::get_project(Matrix &target_mat, int vert
      *      | \
      * C----P--B
      *      <-d-
-     * 
+     *
      * ||P - B|| = t
-     *       
-    */
-    
+     *
+     */
+
     Matrix A = target_mat;
     Matrix B = m_coords.at(vertex_idx1);
     Matrix C = m_coords.at(vertex_idx2);
@@ -136,11 +139,10 @@ std::tuple<float, Matrix> TriangleMesh::get_project(Matrix &target_mat, int vert
     // vector from A to B: v = A - B
     Matrix v = A - B;
     // distance between B and the projection of A on BC: t = v * d
-    float t = (v.transpose() * d).get_pos(0,0);
+    float t = (v.transpose() * d).get_pos(0, 0);
     // projection point P = B + t * d
     Matrix P = B + (d * t);
 
     float distance = (P - A).magnitude();
     return std::make_tuple(distance, P);
-    
 }

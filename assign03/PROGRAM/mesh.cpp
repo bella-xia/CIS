@@ -3,6 +3,10 @@
 Mesh::Mesh() : m_vertices(std::vector<Matrix>()), m_triangles(std::vector<TriangleMesh>()),
                m_num_vertices(0), m_num_triangles(0) {}
 
+Mesh::~Mesh()
+{
+}
+
 void Mesh::insert_vertex(float m1, float m2, float m3)
 {
     m_vertices.push_back(Matrix(m1, m2, m3));
@@ -23,19 +27,21 @@ Matrix Mesh::get_vertex_at(int idx)
 
 Matrix Mesh::find_closest_point(Matrix mat)
 
-{   Matrix min_mat; // closest point
+{
+    Matrix min_mat;            // closest point
     float min_dist = INFINITY; // bound
 
-    //loop through all triangles to find the closest point
+    // loop through all triangles to find the closest point
     for (int i = 0; i < m_num_triangles; i++)
-    {   TriangleMesh trig = m_triangles.at(i);
+    {
+        TriangleMesh trig = m_triangles.at(i);
         std::tuple<float, Matrix> trig_find = trig.find_closest_point_in_triangle(mat);
         float dist = std::get<0>(trig_find);
 
         // update the bound and closest point if the current one is closer to the
         // target than the original closest point.
-        if (dist < min_dist) 
-        {   
+        if (dist < min_dist)
+        {
             min_dist = dist;
             min_mat = std::get<1>(trig_find);
         }
@@ -55,8 +61,8 @@ std::vector<Matrix> Mesh::find_closest_point_advanced(const std::vector<Matrix> 
         spheres[nSphere++] = new BoundingSphere(m_triangles.at(i));
     }
 
-    //construct BoundingBoxTreeNode
-    BoundingBoxTreeNode node(spheres, nSphere);
+    // construct BoundingBoxTreeNode
+    BoundingBoxTreeNode node(spheres, nSphere, false);
 
     // vectors to store the closest point to each target matrix.
     std::vector<Matrix> closests;
@@ -73,6 +79,13 @@ std::vector<Matrix> Mesh::find_closest_point_advanced(const std::vector<Matrix> 
         float bound = INFINITY;
         node.findClosestPoint(mat.at(i), bound, closests.at(i));
     }
-    
+
+    for (int i = 0; i < nSphere; ++i)
+    {
+        delete spheres[i]; // Deletes each BoundingSphere object
+    }
+
+    delete[] spheres;
+
     return closests;
 }

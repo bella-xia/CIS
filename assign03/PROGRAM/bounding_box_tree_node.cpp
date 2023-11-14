@@ -3,11 +3,12 @@
 
 BoundingBoxTreeNode::BoundingBoxTreeNode() {}
 
-BoundingBoxTreeNode::BoundingBoxTreeNode(BoundingSphere **BS, int sphereNum) : BoundingBoxTreeNode()
+BoundingBoxTreeNode::BoundingBoxTreeNode(BoundingSphere **BS, int sphereNum, bool iter)
 {
     BoundingBoxTreeNode();
     spheres = BS;
     nSpheres = sphereNum;
+    m_iter = iter;
     // Calculate the center, max radius, upper and lower bound
     // if the box is not empty.
     if (sphereNum != 0)
@@ -18,10 +19,34 @@ BoundingBoxTreeNode::BoundingBoxTreeNode(BoundingSphere **BS, int sphereNum) : B
         constructSubtrees();
     }
 }
+
+BoundingBoxTreeNode::~BoundingBoxTreeNode()
+{
+    if (!haveSubtrees)
+    {
+        return;
+    }
+    for (int i = 0; i < 2; ++i)
+    {
+        for (int j = 0; j < 2; ++j)
+        {
+            for (int k = 0; k < 2; ++k)
+            {
+                delete subtrees[i][j][k];
+                subtrees[i][j][k] = nullptr;
+            }
+        }
+    }
+}
 void BoundingBoxTreeNode::constructSubtrees()
-{   
-    // construct subtree only if the nsphere is larger than the 
+{
+    // construct subtree only if the nsphere is larger than the
     // minCount and the diagonal is longer than the minDiag
+    // std::cout << "nspheres: " << nSpheres << std::endl;
+    // std::cout << "UB: " << std::endl;
+    // UB.print_str();
+    // std::cout << "LB: " << std::endl;
+    // LB.print_str();
     if (nSpheres <= minCount || (UB - LB).magnitude() <= minDiag)
     {
         haveSubtrees = false;
@@ -30,30 +55,28 @@ void BoundingBoxTreeNode::constructSubtrees()
     haveSubtrees = true;
     int nnn, npn, npp, nnp, pnn, ppn, ppp, pnp;
 
-    // Sort the spheres and update the number of sphere in each subtree. 
+    // Sort the spheres and update the number of sphere in each subtree.
     splitSort(nnn, npn, npp, nnp, pnn, ppn, ppp, pnp);
-    
+
     // temporary pointer for the sphere array.
     BoundingSphere **ptr = spheres;
-    
-    //construct the subtrees
-    subtrees[0][0][0] = new BoundingBoxTreeNode(ptr, nnn);
 
+    // construct the subtrees
+    subtrees[0][0][0] = new BoundingBoxTreeNode(ptr, nnn, nSpheres == nnn);
     ptr += nnn; // move the pointer forward by nnn
-
-    subtrees[0][1][0] = new BoundingBoxTreeNode(ptr, npn);
+    subtrees[0][1][0] = new BoundingBoxTreeNode(ptr, npn, nSpheres == npn);
     ptr += npn;
-    subtrees[0][1][1] = new BoundingBoxTreeNode(ptr, npp);
+    subtrees[0][1][1] = new BoundingBoxTreeNode(ptr, npp, nSpheres == npp);
     ptr += npp;
-    subtrees[0][0][1] = new BoundingBoxTreeNode(ptr, nnp);
+    subtrees[0][0][1] = new BoundingBoxTreeNode(ptr, nnp, nSpheres == nnp);
     ptr += nnp;
-    subtrees[1][0][0] = new BoundingBoxTreeNode(ptr, pnn);
+    subtrees[1][0][0] = new BoundingBoxTreeNode(ptr, pnn, nSpheres == pnn);
     ptr += pnn;
-    subtrees[1][1][0] = new BoundingBoxTreeNode(ptr, ppn);
+    subtrees[1][1][0] = new BoundingBoxTreeNode(ptr, ppn, nSpheres == ppn);
     ptr += ppn;
-    subtrees[1][1][1] = new BoundingBoxTreeNode(ptr, ppp);
+    subtrees[1][1][1] = new BoundingBoxTreeNode(ptr, ppp, nSpheres == ppp);
     ptr += ppp;
-    subtrees[1][0][1] = new BoundingBoxTreeNode(ptr, pnp);
+    subtrees[1][0][1] = new BoundingBoxTreeNode(ptr, pnp, nSpheres == pnp);
 }
 
 void BoundingBoxTreeNode::findClosestPoint(Matrix v, float &bound, Matrix &closest)
@@ -91,7 +114,7 @@ void BoundingBoxTreeNode::findClosestPoint(Matrix v, float &bound, Matrix &close
                 float cur_dis = std::get<0>(cur);
                 if (cur_dis < bound) // if there is a closer sphere
                 {
-                    bound = cur_dis; // update bound
+                    bound = cur_dis;            // update bound
                     closest = std::get<1>(cur); // update distance
                 }
             }
@@ -101,10 +124,10 @@ void BoundingBoxTreeNode::findClosestPoint(Matrix v, float &bound, Matrix &close
 
 void BoundingBoxTreeNode::calculateCenter()
 {
-    
-    float x;
-    float y;
-    float z;
+
+    float x = 0;
+    float y = 0;
+    float z = 0;
     // calculate the sum of x, y, z
     for (int i = 0; i < nSpheres; i++)
     {
@@ -121,7 +144,7 @@ void BoundingBoxTreeNode::calculateCenter()
 
 void BoundingBoxTreeNode::calculateMaxRadius()
 {
-    //iterate through the spheres to find the max radius
+    // iterate through the spheres to find the max radius
     float maxR = 0;
     for (int i = 0; i < nSpheres; i++)
     {
@@ -136,7 +159,7 @@ void BoundingBoxTreeNode::calculateMaxRadius()
 
 void BoundingBoxTreeNode::calcultateMaxMinCoordinate()
 {
-    
+
     float maxX = -1 * INFINITY;
     float maxY = -1 * INFINITY;
     float maxZ = -1 * INFINITY;
@@ -183,31 +206,21 @@ void BoundingBoxTreeNode::calcultateMaxMinCoordinate()
 
 void BoundingBoxTreeNode::splitSort(int &nnn, int &npn, int &npp, int &nnp, int &pnn, int &ppn, int &ppp, int &pnp)
 {
-    int x, y, z;
-    int count[2][2][2] = {};
-
-    // temporary vector to store the spheres corresponding to each subtree.
-    std::vector<BoundingSphere *> nnn_spheres;
-    std::vector<BoundingSphere *> npn_spheres;
-    std::vector<BoundingSphere *> npp_spheres;
-    std::vector<BoundingSphere *> nnp_spheres;
-    std::vector<BoundingSphere *> pnn_spheres;
-    std::vector<BoundingSphere *> ppn_spheres;
-    std::vector<BoundingSphere *> pnp_spheres;
-    std::vector<BoundingSphere *> ppp_spheres;
+    int x = 0;
+    int y = 0;
+    int z = 0;
+    int count[2][2][2] = {0};
 
     // a map to easily find the corresponding vectors in the loop below.
-    std::map<std::tuple<int, int, int>, std::vector<BoundingSphere *> *> vector_map({
-        {std::make_tuple(0, 0, 0), &nnn_spheres},
-        {std::make_tuple(0, 0, 1), &nnp_spheres},
-        {std::make_tuple(0, 1, 0), &npn_spheres},
-        {std::make_tuple(0, 1, 1), &npp_spheres},
-        {std::make_tuple(1, 0, 0), &pnn_spheres},
-        {std::make_tuple(1, 0, 1), &pnp_spheres},
-        {std::make_tuple(1, 1, 0), &ppn_spheres},
-        {std::make_tuple(1, 1, 1), &ppp_spheres},
-    });
-    
+    std::map<std::tuple<int, int, int>, std::vector<BoundingSphere *>> vector_map({{std::make_tuple(0, 0, 0), std::vector<BoundingSphere *>()},
+                                                                                   {std::make_tuple(0, 0, 1), std::vector<BoundingSphere *>()},
+                                                                                   {std::make_tuple(0, 1, 0), std::vector<BoundingSphere *>()},
+                                                                                   {std::make_tuple(0, 1, 1), std::vector<BoundingSphere *>()},
+                                                                                   {std::make_tuple(1, 0, 0), std::vector<BoundingSphere *>()},
+                                                                                   {std::make_tuple(1, 0, 1), std::vector<BoundingSphere *>()},
+                                                                                   {std::make_tuple(1, 1, 0), std::vector<BoundingSphere *>()},
+                                                                                   {std::make_tuple(1, 1, 1), std::vector<BoundingSphere *>()}});
+
     // for all spheres, check which substree it belong and add it to corresponding vector.
     for (int i = 0; i < nSpheres; i++)
     {
@@ -217,10 +230,10 @@ void BoundingBoxTreeNode::splitSort(int &nnn, int &npn, int &npp, int &nnp, int 
         x = (spherex < center.get_pos(0, 0)) ? 0 : 1;
         y = (spherey < center.get_pos(1, 0)) ? 0 : 1;
         z = (spherez < center.get_pos(2, 0)) ? 0 : 1;
-        vector_map[std::make_tuple(x, y, z)]->push_back(spheres[i]);
+        vector_map[std::make_tuple(x, y, z)].push_back(spheres[i]);
         count[x][y][z]++;
     }
-    // store the count bakc in the int references.
+    // store the count back in the int references.
     nnn = count[0][0][0];
     nnp = count[0][0][1];
     npn = count[0][1][0];
@@ -237,7 +250,7 @@ void BoundingBoxTreeNode::splitSort(int &nnn, int &npn, int &npp, int &nnp, int 
     // copy the spheres stored in vector back to the sphere array.
     for (std::tuple<int, int, int> idx : order)
     {
-        for (BoundingSphere *ele : *(vector_map[idx]))
+        for (BoundingSphere *ele : vector_map[idx])
         {
             spheres[sum] = ele;
             sum++;

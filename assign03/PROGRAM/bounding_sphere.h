@@ -37,6 +37,8 @@ public:
     /* Construct a bounding sphere basing on an input sphere. */
     BoundingSphere(TriangleMesh tri);
 
+    ~BoundingSphere();
+
     /* Return the center of the bounding sphere. */
     Matrix getCenter() {return center; }
 

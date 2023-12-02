@@ -188,11 +188,15 @@ Matrix TriangleMesh::get_coord(int idx) const
 {
     int coord_idx = m_vertex_index.at(idx);
     Matrix m_coord = m_vertices_modes->at(0).at(coord_idx);
+    // std::cout << "original coord" << std::endl;
+    // m_coord.print_str();
     Matrix offset(3, 1);
     for (int i = 0; i < (int)m_lambdas->size(); ++i)
     {
         offset = offset + m_vertices_modes->at(i).at(coord_idx) * m_lambdas->at(i);
     }
+    // std::cout << "added offset coord" << std::endl;
+    //(m_coord + offset).print_str();
     return m_coord + offset;
 }
 
@@ -211,6 +215,11 @@ std::tuple<float, float, float> TriangleMesh::get_barycentric_coefficient(Matrix
     float u = area_acp / area_abc;
     float v = area_abp / area_abc;
     float w = area_bcp / area_abc;
+
+    // std::cout << "bary coefficients" << std::endl;
+    // std::cout << w << " " << u << " " << v << std::endl;
+    //(a * w + b * u + c * v).print_str();
+    // p.print_str();
 
     return std::make_tuple(w, u, v);
 }

@@ -218,6 +218,7 @@ void p5_read_modes(std::string file_name,
     int n_v, n_m;
     float v1, v2, v3;
     std::string garbage1, garbage2, garbage3;
+    char garbage4, garbage5;
     std::getline(in_file, in_line);
     std::stringstream(in_line) >> garbage1 >> garbage2 >> garbage3;
 
@@ -235,7 +236,8 @@ void p5_read_modes(std::string file_name,
         for (int i = 0; i < n_v; ++i)
         {
             std::getline(in_file, in_line);
-            std::stringstream(in_line) >> v1 >> v2 >> v3;
+            std::stringstream(in_line) >> v1 >> garbage4 >> v2 >> garbage5 >> v3;
+            // std::cout << v1 << " " << v2 << " " << v3 << std::endl;
             modes.at(j).push_back(Matrix(v1, v2, v3));
         }
     }

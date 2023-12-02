@@ -113,10 +113,16 @@ std::tuple<Frame, std::vector<std::tuple<TriangleMesh, Matrix>>> Mesh::deformed_
         {
             break;
         }
-        std::cout << "current error at deformed level: " << cur_err << std::endl;
+        float err = 0;
+        for (int i = 0; i < (int)mat_copy.size(); ++i)
+        {
+            err += (f_reg * mat_copy.at(i) - std::get<1>(closest_set.at(i))).magnitude();
+        }
+        err /= (int)mat_copy.size();
+        std::cout << "current error at deformed level: " << cur_err << " " << err << std::endl;
         for (int i = 0; i < (int)closest_set.size(); ++i)
         {
-            std::cout << "iter " << i << std::endl;
+            // std::cout << "iter " << i << std::endl;
             TriangleMesh tri = std::get<0>(closest_set.at(i));
             Matrix c = std::get<1>(closest_set.at(i));
             auto coefs = tri.get_barycentric_coefficient(c);
@@ -145,21 +151,62 @@ std::tuple<Frame, std::vector<std::tuple<TriangleMesh, Matrix>>> Mesh::deformed_
             s.assign(1 + 3 * k, 0, f_mat.get_pos(1, 0));
             s.assign(2 + 3 * k, 0, f_mat.get_pos(2, 0));
         }
+        /*
+        std::cout << "q0k: " << std::endl;
+        q0k.print_str();
+        std::cout << "qmk: " << std::endl;
+        qmk.print_str();
+        std::cout << "s: " << std::endl;
+        s.print_str();
+        */
 
         // Equation:
         // s = q0k +  qmk * lambdas ^T
         // qmk * lambdas ^T = s - q0k
         Matrix s_minus_q0k = s - q0k;
+        std::cout << "before: " << std::endl;
+
+        std::cout << s_minus_q0k.magnitude() << std::endl;
 
         // least square
         //  http://math.stackexchange.com/questions/99299/best-fitting-plane-given-a-set-of-points
         Matrix lambda = Matrix(qmk.get().jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(s_minus_q0k.get()));
+
+        // lambda.print_str();
+        Matrix output = q0k + qmk * lambda;
+        std::vector<Matrix> adjusted_cks;
+        for (int m = 0; m < (int)mat_copy.size(); ++m)
+        {
+            adjusted_cks.push_back(Matrix(output.get_pos(3 * m, 0),
+                                          output.get_pos(1 + 3 * m, 0), output.get_pos(2 + 3 * m, 0)));
+        }
+
+        std::cout << "after: " << std::endl;
+        err = 0;
+        for (int i = 0; i < (int)mat_copy.size(); ++i)
+        {
+            TriangleMesh tri = std::get<0>(closest_set.at(i));
+            auto coefs = tri.get_barycentric_coefficient(std::get<1>(closest_set.at(i)));
+            Matrix err_mat = f_reg * mat_copy.at(i) - std::get<1>(closest_set.at(i));
+            for (int j = 0; j < (int)m_lambdas.size(); ++j)
+            {
+                Matrix qmk_mat = tri.get_mode_coord(0, j) * std::get<0>(coefs) +
+                                 tri.get_mode_coord(1, j) * std::get<1>(coefs) + tri.get_mode_coord(2, j) * std::get<2>(coefs);
+                err_mat = err_mat - qmk_mat * lambda.get_pos(j, 0);
+            }
+            err += err_mat.magnitude();
+        }
+        err /= (int)mat_copy.size();
+
+        std::cout << (s - q0k - qmk * lambda).magnitude() << " " << err << std::endl;
 
         // update values in lambda
         for (int z = 0; z < (int)m_lambdas.size(); ++z)
         {
             m_lambdas.at(z) = lambda.get_pos(z, 0);
         }
+
+        iter_output = find_optimum_transformation(adjusted_cks, threshold, advanced);
     }
     return std::make_tuple(f_reg, closest_set);
 }
@@ -259,9 +306,9 @@ float Mesh::find_transformation_helper(std::vector<Matrix> &mat, std::vector<std
     // modify the current frame transformation estimate with the new residual frame
     // transformation
     Frame modification = regis.point_cloud_registration();
-    std::cout << "frame: " << std::endl;
-    modification.get_rot().get_rot().print_str();
-    modification.get_pos().get_pos().print_str();
+    // std::cout << "frame: " << std::endl;
+    // modification.get_rot().get_rot().print_str();
+    // modification.get_pos().get_pos().print_str();
     frame = regis.point_cloud_registration() * frame;
 
     // initiate error float, and add the error magnitude of each point

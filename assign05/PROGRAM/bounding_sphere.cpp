@@ -7,9 +7,9 @@ BoundingSphere::BoundingSphere() : center(Matrix(3, 1)) {}
 BoundingSphere::BoundingSphere(TriangleMesh tri) : center(Matrix(3, 1)), m_idx(1)
 {
     triangle = tri;
-    Matrix a = tri.get_coord_at(0);
-    Matrix b = tri.get_coord_at(1);
-    Matrix c = tri.get_coord_at(2);
+    Matrix a = tri.get_coord(0);
+    Matrix b = tri.get_coord(1);
+    Matrix c = tri.get_coord(2);
     Matrix q = calculateCenter(a, b, c);
     center = q;
 

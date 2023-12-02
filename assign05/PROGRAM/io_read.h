@@ -89,4 +89,11 @@ void p3_read_sample(std::string file_name, std::vector<f_data> &frames, int n_a,
  */
 Matrix p3_read_body(std::string file_name, std::vector<Matrix> &marker);
 
+/**
+ * @param file_name the input file name (ProblemX-BodyY)
+ * @param modes where the data will read into
+ */
+void p5_read_modes(std::string file_name,
+                   std::vector<std::vector<Matrix>> &modes);
+
 #endif

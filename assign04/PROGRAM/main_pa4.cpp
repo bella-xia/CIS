@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     Mesh mesh;
 
     // define the path name.
-    std::string answer_path_name = "../OUTPUT/PA4-";
+    std::string answer_path_name = "../OUTPUT/PA5-";
     std::string answer_path_name_2;
     std::string sample_str;
     if (idx < "G")
@@ -37,12 +37,12 @@ int main(int argc, char **argv)
         sample_str = "-Unknown-SampleReadingsTest.txt";
     }
     std::string path_name = "";
-    std::string debug_path_name = "../DATA/PA4-";
+    std::string debug_path_name = "../DATA/PA5-";
 
     // specify the names for each of the files
-    std::string body_a_str = "../DATA/Problem4-BodyA.txt";
-    std::string body_b_str = "../DATA/Problem4-BodyB.txt";
-    std::string mesh_str = "../DATA/Problem4MeshFile.sur";
+    std::string body_a_str = "../DATA/Problem5-BodyA.txt";
+    std::string body_b_str = "../DATA/Problem5-BodyB.txt";
+    std::string mesh_str = "../DATA/Problem5MeshFile.sur";
 
     // read files
     Matrix ptr_a = p3_read_body(body_a_str, body_a);

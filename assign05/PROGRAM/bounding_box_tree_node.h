@@ -60,7 +60,7 @@ public:
     void constructSubtrees();
 
     /* Update the closest and bound if there is a tree with distance shorter than the bound.*/
-    void findClosestPoint(Matrix v, float &bound, Matrix &closest);
+    void findClosestPoint(Matrix v, float &bound, std::tuple<TriangleMesh, Matrix> &closest);
 };
 
 #endif

@@ -11,14 +11,20 @@ class Mesh
      */
 private:
     std::vector<Matrix> m_vertices;
+    std::vector<std::vector<Matrix>> m_modes;
     std::vector<TriangleMesh> m_triangles;
+    std::vector<float> m_lambdas;
     int m_num_vertices, m_num_triangles;
 
 public:
     // Default constructor of the Mesh
     Mesh();
 
+    Mesh(int n_m, std::vector<std::vector<Matrix>> modes);
+
     ~Mesh();
+
+    void initiate_lambdas(int n_m = 1);
 
     // Insert a vertex into the mesh.
     void insert_vertex(float m1, float m2, float m3);
@@ -29,29 +35,34 @@ public:
     void insert_triangle(Matrix m1, Matrix m2, Matrix m3,
                          int n_idx1, int n_idx2, int n_idx3, int v_idx1, int v_idx2, int v_idx3);
 
+    void add_modes(const std::vector<std::vector<Matrix>> &modes) { m_modes = modes; }
+
     // Return the vertex at a given index.
     Matrix get_vertex_at(int idx);
 
     // Return the closest point in one of the triangle relative to a given Matrix mat
     // through SIMPLE SEARCH
-    Matrix find_closest_point(Matrix mat);
+    std::tuple<TriangleMesh, Matrix> find_closest_point(Matrix mat);
 
     // Return the closest point in one of the triangle relative to a given Matrix mat
     // through BOUNDING BOX TREE NODE SEARCH
-    std::vector<Matrix> find_closest_point_advanced(const std::vector<Matrix> &mat) const;
+    std::vector<std::tuple<TriangleMesh, Matrix>> find_closest_point_advanced(const std::vector<Matrix> &mat, BoundingBoxTreeNode *node) const;
 
     //  iteratively find the optimum transformation based on the set of points provided in the parameter
     // paired with the triangular meshes stored in Mesh class member variables. The threshold is used to
     // indicate the condition to stop iteration. advanced specifies whether advanced or linear closest point
     // search is used.
-    std::tuple<Frame, std::vector<Matrix>> find_optimum_transformation(const std::vector<Matrix> &mat,
-                                                                       float threshold, bool advanced = true);
+    std::tuple<Frame, std::vector<std::tuple<TriangleMesh, Matrix>>, float> find_optimum_transformation(const std::vector<Matrix> &mat,
+                                                                                                        float threshold, bool advanced = true);
+
+    std::tuple<Frame, std::vector<std::tuple<TriangleMesh, Matrix>>> deformed_find_optimum_transformation(const std::vector<Matrix> &mat,
+                                                                                                          float threshold, bool advanced = true);
 
 private:
     // One iteration of finding the closest point correspondence to each point of interest, calculate the point cloud
     // registration, then return the error of the current frame transformation estimation. Helper function to
     // find-optimum-transformation
-    float find_transformation_helper(std::vector<Matrix> &mat, std::vector<Matrix> &c_ks, Frame &frame,
+    float find_transformation_helper(std::vector<Matrix> &mat, std::vector<std::tuple<TriangleMesh, Matrix>> &c_ks, Frame &frame, BoundingBoxTreeNode *node,
                                      bool advanced = true, bool has_outlier = false);
 };
 

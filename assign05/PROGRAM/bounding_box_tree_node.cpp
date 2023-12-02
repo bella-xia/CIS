@@ -79,7 +79,7 @@ void BoundingBoxTreeNode::constructSubtrees()
     subtrees[1][0][1] = new BoundingBoxTreeNode(ptr, pnp, nSpheres == pnp);
 }
 
-void BoundingBoxTreeNode::findClosestPoint(Matrix v, float &bound, Matrix &closest)
+void BoundingBoxTreeNode::findClosestPoint(Matrix v, float &bound, std::tuple<TriangleMesh, Matrix> &closest)
 {
     float dist = bound + maxRadius;
     float vx = v.get_pos(0, 0);
@@ -110,12 +110,13 @@ void BoundingBoxTreeNode::findClosestPoint(Matrix v, float &bound, Matrix &close
         {
             if (spheres[i]->mightBeCloser(v, bound))
             {
-                std::tuple<float, Matrix> cur = spheres[i]->getTriangle().find_closest_point_in_triangle(v);
+                TriangleMesh tri_mesh = spheres[i]->getTriangle();
+                std::tuple<float, Matrix> cur = tri_mesh.find_closest_point_in_triangle(v);
                 float cur_dis = std::get<0>(cur);
                 if (cur_dis < bound) // if there is a closer sphere
                 {
-                    bound = cur_dis;            // update bound
-                    closest = std::get<1>(cur); // update distance
+                    bound = cur_dis;                                       // update bound
+                    closest = std::make_tuple(tri_mesh, std::get<1>(cur)); // update distance
                 }
             }
         }

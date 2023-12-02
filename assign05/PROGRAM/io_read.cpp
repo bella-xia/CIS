@@ -209,6 +209,38 @@ void p3_read_sample(std::string file_name, std::vector<f_data> &frames, int n_a,
     in_file.close();
 }
 
+void p5_read_modes(std::string file_name,
+                   std::vector<std::vector<Matrix>> &modes)
+{
+    std::ifstream in_file;
+    in_file.open(file_name);
+    std::string in_line;
+    int n_v, n_m;
+    float v1, v2, v3;
+    std::string garbage1, garbage2, garbage3;
+    std::getline(in_file, in_line);
+    std::stringstream(in_line) >> garbage1 >> garbage2 >> garbage3;
+
+    int pos1 = garbage2.find("=");
+    n_v = std::stoi(garbage2.substr(pos1 + 1));
+
+    int pos2 = garbage3.find("=");
+    n_m = std::stoi(garbage3.substr(pos2 + 1));
+
+    // fill modes 0 - n_m
+    for (int j = 0; j <= n_m; ++j)
+    {
+        modes.push_back(std::vector<Matrix>());
+        std::getline(in_file, in_line);
+        for (int i = 0; i < n_v; ++i)
+        {
+            std::getline(in_file, in_line);
+            std::stringstream(in_line) >> v1 >> v2 >> v3;
+            modes.at(j).push_back(Matrix(v1, v2, v3));
+        }
+    }
+}
+
 void vector_print(std::vector<std::vector<float>> &vec)
 {
     for (int i = 0; i < (int)vec.size(); ++i)

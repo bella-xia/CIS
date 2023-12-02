@@ -115,6 +115,7 @@ void BoundingBoxTreeNode::findClosestPoint(Matrix v, float &bound, std::tuple<Tr
                 float cur_dis = std::get<0>(cur);
                 if (cur_dis < bound) // if there is a closer sphere
                 {
+                    // std::cout << "closer distance becomes " << cur_dis << std::endl;
                     bound = cur_dis;                                       // update bound
                     closest = std::make_tuple(tri_mesh, std::get<1>(cur)); // update distance
                 }

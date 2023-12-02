@@ -173,13 +173,6 @@ std::tuple<Frame, std::vector<std::tuple<TriangleMesh, Matrix>>> Mesh::deformed_
         Matrix lambda = Matrix(qmk.get().jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(s_minus_q0k.get()));
 
         // lambda.print_str();
-        Matrix output = q0k + qmk * lambda;
-        std::vector<Matrix> adjusted_cks;
-        for (int m = 0; m < (int)mat_copy.size(); ++m)
-        {
-            adjusted_cks.push_back(Matrix(output.get_pos(3 * m, 0),
-                                          output.get_pos(1 + 3 * m, 0), output.get_pos(2 + 3 * m, 0)));
-        }
 
         std::cout << "after: " << std::endl;
         err = 0;
@@ -200,10 +193,25 @@ std::tuple<Frame, std::vector<std::tuple<TriangleMesh, Matrix>>> Mesh::deformed_
 
         std::cout << (s - q0k - qmk * lambda).magnitude() << " " << err << std::endl;
 
+        Matrix output = q0k + qmk * lambda;
+
+        std::cout << "TriangleMesh2_1: " << std::get<0>(closest_set.at(0)).get_coord(0).as_str()
+                  << std::get<0>(closest_set.at(0)).get_coord(1).as_str() << std::get<0>(closest_set.at(0)).get_coord(2).as_str() << std::endl;
+        std::cout << "point2_1: " << output.get_pos(0, 0) << " " << output.get_pos(1, 0) << output.get_pos(2, 0) << std::endl;
+
         // update values in lambda
         for (int z = 0; z < (int)m_lambdas.size(); ++z)
         {
             m_lambdas.at(z) = lambda.get_pos(z, 0);
+        }
+        std::vector<Matrix> adjusted_cks;
+        std::cout << "TriangleMesh2: " << std::get<0>(closest_set.at(0)).get_coord(0).as_str()
+                  << std::get<0>(closest_set.at(0)).get_coord(1).as_str() << std::get<0>(closest_set.at(0)).get_coord(2).as_str() << std::endl;
+        std::cout << "point2: " << output.get_pos(0, 0) << " " << output.get_pos(1, 0) << output.get_pos(2, 0) << std::endl;
+        for (int m = 0; m < (int)mat_copy.size(); ++m)
+        {
+            adjusted_cks.push_back(Matrix(output.get_pos(3 * m, 0),
+                                          output.get_pos(1 + 3 * m, 0), output.get_pos(2 + 3 * m, 0)));
         }
 
         iter_output = find_optimum_transformation(adjusted_cks, threshold, advanced);
@@ -257,7 +265,11 @@ std::tuple<Frame, std::vector<std::tuple<TriangleMesh, Matrix>>, float> Mesh::fi
     // recalculate the closest points
     if (advanced)
     {
+        // std::tuple<TriangleMesh, Matrix> c_0 = find_closest_point(s.at(0));
         c_ks = find_closest_point_advanced(s, &node);
+        std::cout << "TriangleMesh1: " << std::get<0>(c_ks.at(0)).get_coord(0).as_str()
+                  << std::get<0>(c_ks.at(0)).get_coord(1).as_str() << std::get<0>(c_ks.at(0)).get_coord(2).as_str() << std::endl;
+        std::cout << "point1: " << std::get<1>(c_ks.at(0)).as_str() << std::endl;
     }
     else
     {

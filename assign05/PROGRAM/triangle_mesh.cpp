@@ -1,33 +1,5 @@
 #include "triangle_mesh.h"
 
-/*
-TriangleMesh::TriangleMesh() : m_coords(std::vector<Matrix>()),
-                               m_neighbor_index(std::vector<int>()),
-                               m_vertex_index(std::vector<int>()),
-                               m_lambdas(nullptr)
-{
-}
-
-TriangleMesh::TriangleMesh(Matrix mat1, Matrix mat2, Matrix mat3,
-                           int neighbor_idx1, int neighbor_idx2, int neighbor_idx3,
-                           int vertex_idx1, int vertex_idx2, int vertex_idx3,
-                           std::vector<float> *lambdas)
-{
-    TriangleMesh();
-    m_lambdas = lambdas;
-    m_coords.push_back(mat1);
-    m_coords.push_back(mat2);
-    m_coords.push_back(mat3);
-
-    m_neighbor_index.push_back(neighbor_idx1);
-    m_neighbor_index.push_back(neighbor_idx2);
-    m_neighbor_index.push_back(neighbor_idx3);
-
-    m_vertex_index.push_back(vertex_idx1);
-    m_vertex_index.push_back(vertex_idx2);
-    m_vertex_index.push_back(vertex_idx3);
-}
-*/
 TriangleMesh::TriangleMesh() : m_vertices_modes(nullptr), m_neighbor_index(std::vector<int>()),
                                m_vertex_index(std::vector<int>()), m_lambdas(nullptr)
 {
@@ -53,7 +25,20 @@ TriangleMesh::TriangleMesh(std::vector<std::vector<Matrix>> *vertices_modes,
 TriangleMesh::~TriangleMesh()
 {
 }
+ bool TriangleMesh::inTriangle(Matrix m) {
+    Matrix result = get_bary(m);
+    float lambda = result.get_pos(0, 0);
+    float mu = result.get_pos(1, 0);
+    float v = result.get_pos(2, 0);
 
+    bool lambda_is_neg = lambda < 0;
+    bool mu_is_neg = mu < 0;
+    bool v_is_neg = v < 0;
+    if (!lambda_is_neg && !mu_is_neg && !v_is_neg){
+        return true;
+    }
+    return false;
+ }
 std::tuple<float, Matrix> TriangleMesh::find_closest_point_in_triangle(Matrix mat)
 {
 
@@ -89,7 +74,8 @@ std::tuple<float, Matrix> TriangleMesh::find_closest_point_in_triangle(Matrix ma
             return std::make_tuple(dist, get_coord(1));
         }
         // now this means that the shortest line is on the line between vertex 2 and 3
-        return get_project(mat, 1, 2);
+        auto result = get_project(mat, 1, 2);
+        return result;
     }
     else if (mu_is_neg)
     {
@@ -100,10 +86,11 @@ std::tuple<float, Matrix> TriangleMesh::find_closest_point_in_triangle(Matrix ma
             return std::make_tuple(dist, get_coord(0));
         }
         // now this means that the shortest line is on the line between vertex 1 and 3
-        return get_project(mat, 0, 2);
+        auto result = get_project(mat, 0, 2);
+        return result;
     }
     // now this means that the shortest line is on the line between vertex 1 and 2
-    return get_project(mat, 0, 1);
+        return get_project(mat, 0, 1);
 }
 
 Matrix TriangleMesh::get_bary(Matrix mat)
@@ -168,8 +155,16 @@ std::tuple<float, Matrix> TriangleMesh::get_project(Matrix &target_mat, int vert
     Matrix v = A - B;
     // distance between B and the projection of A on BC: t = v * d
     float t = (v.transpose() * d).get_pos(0, 0);
+    Matrix P;
+    if(t > (C - B).magnitude()) {
+        P = C;
+    } else if(t < -1) {
+        P = B;
+    } else {
+        P = B + (d * t);
+    }
+    
     // projection point P = B + t * d
-    Matrix P = B + (d * t);
 
     float distance = (P - A).magnitude();
     return std::make_tuple(distance, P);
@@ -193,7 +188,7 @@ Matrix TriangleMesh::get_coord(int idx) const
     Matrix offset(3, 1);
     for (int i = 0; i < (int)m_lambdas->size(); ++i)
     {
-        offset = offset + m_vertices_modes->at(i).at(coord_idx) * m_lambdas->at(i);
+        offset = offset + m_vertices_modes->at(i + 1).at(coord_idx) * m_lambdas->at(i);
     }
     // std::cout << "added offset coord" << std::endl;
     //(m_coord + offset).print_str();

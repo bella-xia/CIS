@@ -95,12 +95,46 @@ int main(int argc, char **argv)
         fb_reg.clean_matrix_b();
     }
 
-    auto output = mesh.deformed_find_optimum_transformation(d_ks, 0.95);
+    auto output = mesh.deformed_find_optimum_transformation(d_ks, 0.999);
 
     Frame f_estimate = std::get<0>(output);
     std::cout << "frame transformation: " << std::endl;
     f_estimate.get_rot().get_rot().print_str();
     f_estimate.get_pos().get_pos().print_str();
+    std::vector<Matrix> s_ks;
+    std::vector<Matrix> c_ks;
+    auto result = std::get<1> (output);
+    for (Matrix m : d_ks)
+    {
+        s_ks.push_back(f_estimate * m);
+        
+    }
+    for(std::tuple<TriangleMesh, Matrix> c : result) {
+        c_ks.push_back(std::get<1>(c));
+    }
+
+
+    // output results
+    std::string output_filename = answer_path_name + idx + answer_path_name_2;
+    std::ofstream out_file(output_filename);
+    if (out_file.is_open())
+    {
+        out_file << (int)sample_reading.size() << ", " << output_filename << ", " << ((int)modes.size() - 1) << std::endl;
+        std::vector<float> lambdas = mesh.get_lambdas();
+        for(int i = 0; i < lambdas.size(); i++) {
+            out_file << lambdas[i] <<", ";
+        }
+        out_file<<std::endl;
+
+        for (int frame_num = 0; frame_num < (int)sample_reading.size(); ++frame_num)
+        {
+            std::string output_line = formatLine(s_ks[frame_num], c_ks[frame_num]);
+            out_file << output_line << "\n";
+        }
+        out_file.close();
+    }
+
+
 
     return 0;
 }

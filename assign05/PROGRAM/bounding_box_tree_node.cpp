@@ -118,6 +118,10 @@ void BoundingBoxTreeNode::findClosestPoint(Matrix v, float &bound, std::tuple<Tr
                     // std::cout << "closer distance becomes " << cur_dis << std::endl;
                     bound = cur_dis;                                       // update bound
                     closest = std::make_tuple(tri_mesh, std::get<1>(cur)); // update distance
+                    Matrix c = std::get<1>(cur);
+                    if(std::get<0>(tri_mesh.find_closest_point_in_triangle(c) )> 0.001) {
+                        //std::cout<< "x distance" <<std::get<0>(tri_mesh.find_closest_point_in_triangle(std::get<1>(cur)))<<std::endl;
+                    }
                 }
             }
         }

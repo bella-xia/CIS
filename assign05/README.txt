@@ -139,34 +139,34 @@ same plane as triangle. So that if the point randomly generated is (.345, 0.567,
 Makefile shortcut: make mesh
 Executable: mesh
 
+12. _mesh_test2.cpp
+
+Create 3D ellipsoid surface, with the three radii
+5.0, 10.0, and 15.0 respectively. We are able to feed a total of 5000 
+vertices and triangular meshes into the Mesh class to create the 3D surface
+feature. Then, we randomly generated 100 points on the surface and 
+performed the search for optimum frame transformation. 
+Mekefile shortcut: make mesh2
+Executable: mesh2
+
+13. _mesh_test3.cpp
+
+same test as _mesh_test2 but with the inclusion of modes for each vertex
+
+Mekefile shortcut: make mesh3
+Executable: mesh3
+
 Data Analysis
 
-1. output_comp.cpp
+1. pa3_output_stats.cpp
 Output statistics on the resulting output compard with expected output files
 
-Makefile shortcut: make comp
-Executable: comp
+Makefile shortcut: make pa3-stats
+Executable: pa3-stats
 
-Using custom file and its corresponding output file on C expected:
-    ./comp <expected output filename> <student outpu filename>
-
-Using the current a-g debug output files on C expected:
-    ./comp C
-
-Using the current a-g debug output files on pivot calibration:
-    ./comp
-
-Due to the need for repeated trials to be able to obtain a range of possible values for pivot calibration based on
-which frame is chosen to be used to determine the frame axis (G_0), we are unable to provide a quick access to
-stastics over pivot based on the expected and actual output files alone.
-
-2. pa3_comp_stats.cpp
-
-Makefile: make pa3-stats
-Executable: ./pa3-stats
-
-provide statistics on the mean and standard deviation of error between expected closest point set and calculated 
-closest point sets with and without registration step.
+Use 5 as the second input in terminal indicates an overview over the
+statistics of pa5
+    ./pa3-stats 5
 
 
 Reference

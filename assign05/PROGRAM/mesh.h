@@ -55,10 +55,9 @@ public:
     std::tuple<std::vector<std::tuple<TriangleMesh, Matrix>>, float> find_optimum_transformation(const std::vector<Matrix> &mat, Frame &frame,
                                                                                                  float threshold, bool advanced = true);
 
+    // iteratively find the optimum transformation when deformation with respect to a set of provided modes exist
     std::tuple<Frame, std::vector<std::tuple<TriangleMesh, Matrix>>> deformed_find_optimum_transformation(const std::vector<Matrix> &mat,
                                                                                                           float threshold, bool advanced = true);
-    std::tuple<Frame, std::vector<std::tuple<TriangleMesh, Matrix>>, float> debug_find_optimum_transformation(Frame estimate, const std::vector<Matrix> &mat, float threshold, bool advanced);
-    float get_error_debug(std::vector<Matrix> s_s, std::vector<Matrix> c_s);
 
 private:
     // One iteration of finding the closest point correspondence to each point of interest, calculate the point cloud
@@ -66,10 +65,6 @@ private:
     // find-optimum-transformation
     float find_transformation_helper(std::vector<Matrix> &mat, std::vector<std::tuple<TriangleMesh, Matrix>> &c_ks, Frame &frame, BoundingBoxTreeNode *node,
                                      bool advanced = true, bool has_outlier = false);
-    float debug_find_transformation_helper(std::vector<Matrix> &mat, std::vector<std::tuple<TriangleMesh, Matrix>> &c_ks, Frame &frame, BoundingBoxTreeNode *node,
-                                           bool advanced = true, bool has_outlier = false);
-    void linear_search_triangle(Matrix m);
-    std::tuple<Frame, std::vector<std::tuple<TriangleMesh, Matrix>>, float> debug_find_optimum_transformation(const std::vector<Matrix> &mat, float threshold, bool advanced);
     float get_error(std::vector<Matrix> s_s, std::vector<Matrix> c_s);
 };
 

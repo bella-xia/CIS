@@ -4,6 +4,8 @@ TriangleMesh::TriangleMesh() : m_vertices_modes(nullptr), m_neighbor_index(std::
                                m_vertex_index(std::vector<int>()), m_lambdas(nullptr)
 {
 }
+
+// constructor for pa5
 TriangleMesh::TriangleMesh(std::vector<std::vector<Matrix>> *vertices_modes,
                            int neighbor_idx1, int neighbor_idx2, int neighbor_idx3,
                            int vertex_idx1, int vertex_idx2, int vertex_idx3,
@@ -25,13 +27,20 @@ TriangleMesh::TriangleMesh(std::vector<std::vector<Matrix>> *vertices_modes,
 TriangleMesh::~TriangleMesh()
 {
 }
+
+// function to determine whether a given point is within
+// the current triangle
 bool TriangleMesh::inTriangle(Matrix m)
 {
+    // get the bary coefficients for the matrix
     Matrix result = get_bary(m);
     float lambda = result.get_pos(0, 0);
     float mu = result.get_pos(1, 0);
     float v = result.get_pos(2, 0);
 
+    // check whether the three coefficients are positive,
+    // and use the info to determine whether it is within
+    // the triangle
     bool lambda_is_neg = lambda < 0;
     bool mu_is_neg = mu < 0;
     bool v_is_neg = v < 0;
@@ -42,14 +51,18 @@ bool TriangleMesh::inTriangle(Matrix m)
     return false;
 }
 
+// find the point on the triangular mesh that is closest to the point of query
 std::tuple<float, Matrix> TriangleMesh::find_closest_point_in_triangle(Matrix mat)
 {
 
+    // get the barycentric coefficients of the current point
+    // with respect to the three triangular coordinates
     Matrix result = get_bary(mat);
     float lambda = result.get_pos(0, 0);
     float mu = result.get_pos(1, 0);
     float v = result.get_pos(2, 0);
 
+    // check the sign of the three coefficients
     bool lambda_is_neg = lambda < 0;
     bool mu_is_neg = mu < 0;
     bool v_is_neg = v < 0;
@@ -58,10 +71,6 @@ std::tuple<float, Matrix> TriangleMesh::find_closest_point_in_triangle(Matrix ma
     if (!lambda_is_neg && !mu_is_neg && !v_is_neg)
     {
         Matrix closest = get_coord(0) * lambda + get_coord(1) * mu + get_coord(2) * v;
-        // if (!inTriangle(closest))
-        // {
-        //     std::cout << "it is supposed to be in triangle with three positive but it doesn't" << std::endl;
-        // }
         float dist = (closest - mat).magnitude();
         return std::make_tuple(dist, closest);
     }
@@ -81,10 +90,6 @@ std::tuple<float, Matrix> TriangleMesh::find_closest_point_in_triangle(Matrix ma
         }
         // now this means that the shortest line is on the line between vertex 2 and 3
         auto result = get_project(mat, 1, 2);
-        // if (!inTriangle(std::get<1>(result)))
-        // {
-        //     std::cout << "lambda being negative but project is being stupid" << std::endl;
-        // }
         return result;
     }
     else if (mu_is_neg)
@@ -97,19 +102,21 @@ std::tuple<float, Matrix> TriangleMesh::find_closest_point_in_triangle(Matrix ma
         }
         // now this means that the shortest line is on the line between vertex 1 and 3
         auto result = get_project(mat, 0, 2);
-        // if (!inTriangle(std::get<1>(result)))
-        // {
-        //     std::cout << "mu being negative but project is being stupid" << std::endl;
-        // }
         return result;
     }
     // now this means that the shortest line is on the line between vertex 1 and 2
     auto results = get_project(mat, 0, 1);
-    // // if (!inTriangle(std::get<1>(results)))
-    // // {
-    // //     std::cout << "v being negative but project is being stupid" << std::endl;
-    // // }
     return results;
+}
+
+std::vector<float> TriangleMesh::get_lambda() const
+{
+    std::vector<float> lambda_copy;
+    for (int i = 0; i < (int)m_lambdas->size(); i++)
+    {
+        lambda_copy.push_back(m_lambdas->at(i));
+    }
+    return lambda_copy;
 }
 
 Matrix TriangleMesh::get_bary(Matrix mat)
@@ -194,6 +201,7 @@ std::tuple<float, Matrix> TriangleMesh::get_project(Matrix &target_mat, int vert
     return std::make_tuple(distance, P);
 }
 
+// helper function to obtain the area of a triangular 3D plane
 float TriangleMesh::get_area(Matrix v1, Matrix v2, Matrix v3)
 {
     Matrix AB = v2 - v1;
@@ -203,52 +211,21 @@ float TriangleMesh::get_area(Matrix v1, Matrix v2, Matrix v3)
     return cross_magnitude / 2.0;
 }
 
+// get the coordinate of a triangular mesh with the updated mode values
 Matrix TriangleMesh::get_coord(int idx) const
 {
     int coord_idx = m_vertex_index.at(idx);
-    // std::cout << "idx of interest: " << idx << " coord index: " << coord_idx << std::endl;
     Matrix m_coord = m_vertices_modes->at(0).at(coord_idx);
-    // std::cout << "original coord" << std::endl;
-    // m_coord.print_str();
     Matrix offset(3, 1);
     for (int i = 0; i < (int)m_lambdas->size(); ++i)
     {
         offset = offset + m_vertices_modes->at(i + 1).at(coord_idx) * m_lambdas->at(i);
     }
-    // std::cout << "added offset coord" << std::endl;
-    //(m_coord + offset).print_str();
     return m_coord + offset;
 }
 
-std::tuple<float, float, float> TriangleMesh::get_barycentric_coefficient(Matrix p)
-{
-    Matrix a = get_coord(0);
-    Matrix b = get_coord(1);
-    Matrix c = get_coord(2);
-
-    float area_abc = get_area(a, b, c);
-    float area_abp = get_area(a, b, p);
-    float area_acp = get_area(a, c, p);
-    float area_bcp = get_area(b, c, p);
-
-    // equation: w * A + u * B + v * C
-    float u = area_acp / area_abc;
-    float v = area_abp / area_abc;
-    float w = area_bcp / area_abc;
-
-    if (u + v + w - 1 > 0.1)
-    {
-        std::cout << area_acp << " " << area_abp << " " << area_bcp << " " << area_abc << std::endl;
-    }
-
-    // std::cout << "bary coefficients" << std::endl;
-    // std::cout << w << " " << u << " " << v << std::endl;
-    //(a * w + b * u + c * v).print_str();
-    // p.print_str();
-
-    return std::make_tuple(w, u, v);
-}
-
+// return a vector containing all three coordinates of the triangular mesh,
+// updated based on the current lambdas value
 std::vector<Matrix> TriangleMesh::get_coords() const
 {
     std::vector<Matrix> return_vec;

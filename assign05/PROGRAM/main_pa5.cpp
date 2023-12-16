@@ -151,26 +151,6 @@ int main(int argc, char **argv)
 }
 
 /**
- * helper function to find the set of closest points to the target points
- */
-/*
-std::vector<Matrix> matching(Mesh &mesh, const std::vector<Matrix> &q_ks, bool advanced)
-{
-    if (!advanced)
-    {
-        std::vector<Matrix> closest_points;
-        for (int i = 0; i < (int)q_ks.size(); i++)
-        {
-            closest_points.push_back(mesh.find_closest_point(q_ks.at(i)));
-        }
-        return closest_points;
-    }
-    std::vector<Matrix> closest_points = mesh.find_closest_point_advanced(q_ks);
-    return closest_points;
-}
-*/
-
-/**
  * helper function to format the output file
  */
 std::string formatLine(Matrix d, Matrix s)

@@ -25,7 +25,8 @@ TriangleMesh::TriangleMesh(std::vector<std::vector<Matrix>> *vertices_modes,
 TriangleMesh::~TriangleMesh()
 {
 }
- bool TriangleMesh::inTriangle(Matrix m) {
+bool TriangleMesh::inTriangle(Matrix m)
+{
     Matrix result = get_bary(m);
     float lambda = result.get_pos(0, 0);
     float mu = result.get_pos(1, 0);
@@ -34,11 +35,13 @@ TriangleMesh::~TriangleMesh()
     bool lambda_is_neg = lambda < 0;
     bool mu_is_neg = mu < 0;
     bool v_is_neg = v < 0;
-    if (!lambda_is_neg && !mu_is_neg && !v_is_neg){
+    if (!lambda_is_neg && !mu_is_neg && !v_is_neg)
+    {
         return true;
     }
     return false;
- }
+}
+
 std::tuple<float, Matrix> TriangleMesh::find_closest_point_in_triangle(Matrix mat)
 {
 
@@ -55,10 +58,13 @@ std::tuple<float, Matrix> TriangleMesh::find_closest_point_in_triangle(Matrix ma
     if (!lambda_is_neg && !mu_is_neg && !v_is_neg)
     {
         Matrix closest = get_coord(0) * lambda + get_coord(1) * mu + get_coord(2) * v;
+        // if (!inTriangle(closest))
+        // {
+        //     std::cout << "it is supposed to be in triangle with three positive but it doesn't" << std::endl;
+        // }
         float dist = (closest - mat).magnitude();
         return std::make_tuple(dist, closest);
     }
-
     if (lambda_is_neg)
     {
         if (mu_is_neg)
@@ -75,6 +81,10 @@ std::tuple<float, Matrix> TriangleMesh::find_closest_point_in_triangle(Matrix ma
         }
         // now this means that the shortest line is on the line between vertex 2 and 3
         auto result = get_project(mat, 1, 2);
+        // if (!inTriangle(std::get<1>(result)))
+        // {
+        //     std::cout << "lambda being negative but project is being stupid" << std::endl;
+        // }
         return result;
     }
     else if (mu_is_neg)
@@ -87,10 +97,19 @@ std::tuple<float, Matrix> TriangleMesh::find_closest_point_in_triangle(Matrix ma
         }
         // now this means that the shortest line is on the line between vertex 1 and 3
         auto result = get_project(mat, 0, 2);
+        // if (!inTriangle(std::get<1>(result)))
+        // {
+        //     std::cout << "mu being negative but project is being stupid" << std::endl;
+        // }
         return result;
     }
     // now this means that the shortest line is on the line between vertex 1 and 2
-        return get_project(mat, 0, 1);
+    auto results = get_project(mat, 0, 1);
+    // // if (!inTriangle(std::get<1>(results)))
+    // // {
+    // //     std::cout << "v being negative but project is being stupid" << std::endl;
+    // // }
+    return results;
 }
 
 Matrix TriangleMesh::get_bary(Matrix mat)
@@ -156,14 +175,19 @@ std::tuple<float, Matrix> TriangleMesh::get_project(Matrix &target_mat, int vert
     // distance between B and the projection of A on BC: t = v * d
     float t = (v.transpose() * d).get_pos(0, 0);
     Matrix P;
-    if(t > (C - B).magnitude()) {
+    if (t > (C - B).magnitude())
+    {
         P = C;
-    } else if(t < -1) {
+    }
+    else if (t < -1)
+    {
         P = B;
-    } else {
+    }
+    else
+    {
         P = B + (d * t);
     }
-    
+
     // projection point P = B + t * d
 
     float distance = (P - A).magnitude();
@@ -182,6 +206,7 @@ float TriangleMesh::get_area(Matrix v1, Matrix v2, Matrix v3)
 Matrix TriangleMesh::get_coord(int idx) const
 {
     int coord_idx = m_vertex_index.at(idx);
+    // std::cout << "idx of interest: " << idx << " coord index: " << coord_idx << std::endl;
     Matrix m_coord = m_vertices_modes->at(0).at(coord_idx);
     // std::cout << "original coord" << std::endl;
     // m_coord.print_str();
@@ -210,6 +235,11 @@ std::tuple<float, float, float> TriangleMesh::get_barycentric_coefficient(Matrix
     float u = area_acp / area_abc;
     float v = area_abp / area_abc;
     float w = area_bcp / area_abc;
+
+    if (u + v + w - 1 > 0.1)
+    {
+        std::cout << area_acp << " " << area_abp << " " << area_bcp << " " << area_abc << std::endl;
+    }
 
     // std::cout << "bary coefficients" << std::endl;
     // std::cout << w << " " << u << " " << v << std::endl;

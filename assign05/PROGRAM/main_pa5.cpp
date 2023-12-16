@@ -9,10 +9,15 @@ std::string formatNum(float a);
 
 int main(int argc, char **argv)
 {
-    std::string idx = argv[1];
+    std::string idx = "A";
+    std::string res = "h";
     if (argc > 1)
     {
         idx = argv[1];
+    }
+    if (argc > 2)
+    {
+        res = argv[2];
     }
 
     // create structures to store data
@@ -21,10 +26,14 @@ int main(int argc, char **argv)
     std::vector<f_data> sample_reading = std::vector<f_data>();
     std::vector<std::vector<Matrix>> modes;
 
-    std::string data_path_name = "../DATA/PA5-";
-    std::string answer_path_name = "../OUTPUT/PA5-";
     std::string answer_path_name_2;
     std::string sample_str;
+    std::string data_path_name = "../DATA/PA5-HighRes-";
+    std::string answer_path_name = "../OUTPUT/PA5-HighRes-";
+    std::string body_a_str = "../DATA/Problem5-HighRes-BodyA.txt";
+    std::string body_b_str = "../DATA/Problem5-HighRes-BodyB.txt";
+    std::string mesh_str = "../DATA/Problem5-HighRes-MeshFile.sur";
+    std::string modes_path = "../DATA/Problem5-HighRes-Modes.txt";
     if (idx < "G")
     {
         answer_path_name_2 = "-Debug_Output.txt";
@@ -36,11 +45,15 @@ int main(int argc, char **argv)
         sample_str = "-Unknown-SampleReadingsTest.txt";
     }
 
-    std::string body_a_str = "../DATA/Problem5-BodyA.txt";
-    std::string body_b_str = "../DATA/Problem5-BodyB.txt";
-    std::string mesh_str = "../DATA/Problem5MeshFile.sur";
-    std::string modes_path = "../DATA/Problem5Modes.txt";
-
+    if (res != "h")
+    {
+        data_path_name = "../DATA/PA5-";
+        answer_path_name = "../OUTPUT/PA5-";
+        body_a_str = "../DATA/Problem5-BodyA.txt";
+        body_b_str = "../DATA/Problem5-BodyB.txt";
+        mesh_str = "../DATA/Problem5MeshFile.sur";
+        modes_path = "../DATA/Problem5Modes.txt";
+    }
     p5_read_modes(modes_path, modes);
 
     Mesh mesh((int)modes.size() - 1, modes);
@@ -95,7 +108,7 @@ int main(int argc, char **argv)
         fb_reg.clean_matrix_b();
     }
 
-    auto output = mesh.deformed_find_optimum_transformation(d_ks, 0.999);
+    auto output = mesh.deformed_find_optimum_transformation(d_ks, 0.95);
 
     Frame f_estimate = std::get<0>(output);
     std::cout << "frame transformation: " << std::endl;
@@ -103,16 +116,15 @@ int main(int argc, char **argv)
     f_estimate.get_pos().get_pos().print_str();
     std::vector<Matrix> s_ks;
     std::vector<Matrix> c_ks;
-    auto result = std::get<1> (output);
+    auto result = std::get<1>(output);
     for (Matrix m : d_ks)
     {
         s_ks.push_back(f_estimate * m);
-        
     }
-    for(std::tuple<TriangleMesh, Matrix> c : result) {
+    for (std::tuple<TriangleMesh, Matrix> c : result)
+    {
         c_ks.push_back(std::get<1>(c));
     }
-
 
     // output results
     std::string output_filename = answer_path_name + idx + answer_path_name_2;
@@ -121,10 +133,11 @@ int main(int argc, char **argv)
     {
         out_file << (int)sample_reading.size() << ", " << output_filename << ", " << ((int)modes.size() - 1) << std::endl;
         std::vector<float> lambdas = mesh.get_lambdas();
-        for(int i = 0; i < lambdas.size(); i++) {
-            out_file << lambdas[i] <<", ";
+        for (int i = 0; i < (int)lambdas.size(); i++)
+        {
+            out_file << lambdas[i] << ", ";
         }
-        out_file<<std::endl;
+        out_file << std::endl;
 
         for (int frame_num = 0; frame_num < (int)sample_reading.size(); ++frame_num)
         {
@@ -133,8 +146,6 @@ int main(int argc, char **argv)
         }
         out_file.close();
     }
-
-
 
     return 0;
 }

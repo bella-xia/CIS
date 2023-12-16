@@ -1,0 +1,24 @@
+file A:
+Error mean for closest point: 0.27715
+Error standard deviation for closest point: 8.91759
+
+file B:
+Error mean for closest point: 0.353339
+Error standard deviation for closest point: 10.8657
+
+file C:
+Error mean for closest point: -0.18211
+Error standard deviation for closest point: 3.0904
+
+file D:
+Error mean for closest point: 0.23752
+Error standard deviation for closest point: 5.23884
+
+file E:
+Error mean for closest point: -0.198833
+Error standard deviation for closest point: 3.76913
+
+file F:
+Error mean for closest point: -0.085515
+Error standard deviation for closest point: 5.01061
+

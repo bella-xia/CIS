@@ -104,6 +104,12 @@ int main(int argc, char **argv)
             output_with_regis_str = "../OUTPUT/PA4-";
             output_filename = "../TEST/pa4_stats.txt";
         }
+        else if (input == "5")
+        {
+            expected_str = "../DATA/PA5-HighRes-";
+            output_with_regis_str = "../OUTPUT/PA5-HighRes-";
+            output_filename = "../TEST/pa5_stats.txt";
+        }
     }
     std::vector<std::string> idxs({"A", "B", "C", "D", "E", "F"});
     // pa3 check
@@ -211,8 +217,8 @@ int main(int argc, char **argv)
             for (int i = 0; i < (int)idxs.size(); ++i)
             {
                 out_file << "file " << idxs.at(i) << ":" << std::endl;
-                out_file << "Error mean for closest point with registration process: " << with_regis_means.at(i) << std::endl;
-                out_file << "Error standard deviation for closest point with registration process: " << with_regis_stds.at(i) << std::endl;
+                out_file << "Error mean for closest point: " << with_regis_means.at(i) << std::endl;
+                out_file << "Error standard deviation for closest point: " << with_regis_stds.at(i) << std::endl;
                 out_file << std::endl;
             }
 

@@ -20,13 +20,13 @@ private:
     std::vector<float> *m_lambdas;
 
     // Calculate the Barycentric formula to find the cloest point in the triangle.
-    Matrix get_bary(Matrix mat);
 
     float get_area(Matrix v1, Matrix v2, Matrix v3);
 
     // Calculate the projection of the target_mat on the edge formed by vertex_idx1 and vertex_idx2.
     std::tuple<float, Matrix> get_project(Matrix &target_mat, int vertex_idx1, int vertex_idx2);
     bool inTriangle(Matrix m);
+
 public:
     // Default constructor
     TriangleMesh();
@@ -49,11 +49,13 @@ public:
     std::vector<Matrix> get_coords() const;
     // Return the vertice of a given index of the triangle.
     Matrix get_coord(int idx) const;
-    std::vector<float> get_lambda () const{
+    std::vector<float> get_lambda() const
+    {
         std::vector<float> lambda_copy;
-        for(int i = 0; i < m_lambdas->size(); i++ ) {
+        for (int i = 0; i < (int)m_lambdas->size(); i++)
+        {
             lambda_copy.push_back(m_lambdas->at(i));
-        } 
+        }
         return lambda_copy;
     }
     Matrix get_original_coord(int idx) const { return m_vertices_modes->at(0).at(m_vertex_index.at(idx)); }
@@ -64,10 +66,9 @@ public:
     std::tuple<float, Matrix> find_closest_point_in_triangle(Matrix mat);
 
     std::tuple<float, float, float> get_barycentric_coefficient(Matrix p);
+    Matrix get_bary(Matrix mat);
 
-
-    //std::tuple<float, Matrix> debug_find_closest_point_in_triangle(Matrix mat);
-    //std::tuple<float, Matrix> debug_get_project(Matrix &target_mat, int vertex_idx1, int vertex_idx2);
-
+    // std::tuple<float, Matrix> debug_find_closest_point_in_triangle(Matrix mat);
+    // std::tuple<float, Matrix> debug_get_project(Matrix &target_mat, int vertex_idx1, int vertex_idx2);
 };
 #endif

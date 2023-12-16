@@ -25,6 +25,9 @@ CXX_MESH_OBJS = $(CXX_MESH_SRCS:%.cpp=%.o)
 CXX_MESH2_SRCS = matrix.cpp rotation.cpp position.cpp frame.cpp registration.cpp triangle_mesh.cpp bounding_sphere.cpp bounding_box_tree_node.cpp mesh.cpp _mesh_test2.cpp
 CXX_MESH2_OBJS = $(CXX_MESH2_SRCS:%.cpp=%.o)
 
+CXX_MESH3_SRCS = matrix.cpp rotation.cpp position.cpp frame.cpp registration.cpp triangle_mesh.cpp bounding_sphere.cpp bounding_box_tree_node.cpp mesh.cpp _mesh_test3.cpp
+CXX_MESH3_OBJS = $(CXX_MESH3_SRCS:%.cpp=%.o)
+
 CXX_MATRIX_SRCS = matrix.cpp  _matrix_test.cpp
 CXX_MATRIX_OBJS = $(CXX_MATRIX_SRCS:%.cpp=%.o)
 
@@ -107,6 +110,9 @@ mesh: $(CXX_MESH_OBJS)
 
 mesh2: $(CXX_MESH2_OBJS)
 	$(CXX) -o $@ $(CXX_MESH2_OBJS)
+
+mesh3: $(CXX_MESH3_OBJS)
+	$(CXX) -o $@ $(CXX_MESH3_OBJS)
 
 pa1: $(CXX_PA1_OBJS)
 	$(CXX) -o $@ $(CXX_PA1_OBJS)

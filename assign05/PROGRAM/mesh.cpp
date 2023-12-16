@@ -18,7 +18,7 @@ Mesh::~Mesh()
 {
 }
 
-// initiate the data structure for lambda with given mode number
+// initiate the data structure for lambda with given mode number with all lambda = 0
 void Mesh::initiate_lambdas(int n_m)
 {
     m_lambdas = std::vector<float>();
@@ -36,6 +36,9 @@ void Mesh::insert_vertex(float m1, float m2, float m3)
 }
 
 // insert a given triangle into local triangular meshes
+// m_k: the triangle's vertices
+// n_idx_k: the neighber's index
+// v_idx_k: the vertices' index
 void Mesh::insert_triangle(Matrix m1, Matrix m2, Matrix m3,
                            int n_idx1, int n_idx2, int n_idx3, int v_idx1, int v_idx2, int v_idx3)
 {
@@ -106,12 +109,14 @@ std::vector<std::tuple<TriangleMesh, Matrix>> Mesh::find_closest_point_advanced(
 std::tuple<Frame, std::vector<std::tuple<TriangleMesh, Matrix>>> Mesh::deformed_find_optimum_transformation(const std::vector<Matrix> &mat,
                                                                                                             float threshold, bool advanced)
 {
+    // make a copy of the c Matrix
     std::vector<Matrix> mat_copy(mat);
-    // initiate a frame transformation with identity rotation and zero translation
     // initiate the previous error and current error values to be sufficiently big
     float pre_err = INFINITY;
     float cur_err = 100000;
+    // initiate a frame transformation with identity rotation and zero translation
     Frame f_reg = Frame();
+
     std::vector<std::tuple<TriangleMesh, Matrix>> closest_set;
 
     while (1)
@@ -131,23 +136,9 @@ std::tuple<Frame, std::vector<std::tuple<TriangleMesh, Matrix>>> Mesh::deformed_
         // check the threshold to determine whether to continue updated deformed ratios
         if (cur_err / pre_err > threshold)
         {
-            std::cout << "cur_err: " << cur_err << "pre_err: " << pre_err << std::endl;
             break;
         }
-
-        // obtain the values for closest point sets and matrix of interest sets
-        std::vector<Matrix> s_mat;
-        std::vector<Matrix> c_mat;
-        for (int i = 0; i < (int)mat_copy.size(); ++i)
-        {
-            s_mat.push_back(f_reg * mat_copy.at(i));
-            c_mat.push_back(std::get<1>(closest_set.at(i)));
-        }
-
-        // obtain the current error value
-        float err = get_error(s_mat, c_mat);
-        std::cout << "current error at deformed level: " << cur_err << " " << err << std::endl;
-
+        
         // obtain the current coefficients for each closest point with respect to the trhee coordiates
         // of the triangular mesh it belong to.
         // fill matrices q0_k, qm_k, and c0 based on the coefficients and previous data
@@ -191,53 +182,9 @@ std::tuple<Frame, std::vector<std::tuple<TriangleMesh, Matrix>>> Mesh::deformed_
 
         Matrix s_minus_q0k = s - q0k;
 
-        // least square
+        // least square to find lambdas that minimize |s - (q0k + lambda * qmk)  
         //  http://math.stackexchange.com/questions/99299/best-fitting-plane-given-a-set-of-points
         Matrix lambda = Matrix(qmk.get().jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(s_minus_q0k.get()));
-
-        Matrix output = q0k + qmk * lambda;
-
-        // calculate and compare the error before and after distortion adjustment
-        err = 0;
-        float after_dis_err = 0;
-        for (int i = 0; i < (int)mat_copy.size(); ++i)
-        {
-            TriangleMesh tri = std::get<0>(closest_set.at(i));
-            auto coefs = tri.get_bary(std::get<1>(closest_set.at(i)));
-            Matrix q0k_mat = tri.get_original_coord(0) * coefs.get_pos(0, 0) +
-                             tri.get_original_coord(1) * coefs.get_pos(1, 0) +
-                             tri.get_original_coord(2) * coefs.get_pos(2, 0);
-            Matrix err_mat = f_reg * mat_copy.at(i) - q0k_mat;
-            Matrix after_dis_err_mat = f_reg * mat_copy.at(i) - q0k_mat;
-            for (int j = 0; j < (int)m_lambdas.size(); ++j)
-            {
-                Matrix qmk_mat = tri.get_mode_coord(0, j) * coefs.get_pos(0, 0) +
-                                 tri.get_mode_coord(1, j) * coefs.get_pos(1, 0) +
-                                 tri.get_mode_coord(2, j) * coefs.get_pos(2, 0);
-                after_dis_err_mat = after_dis_err_mat - qmk_mat * lambda.get_pos(j, 0);
-                err_mat = err_mat - qmk_mat * tri.get_lambda().at(j);
-            }
-            err += err_mat.magnitude();
-            after_dis_err += after_dis_err_mat.magnitude();
-        }
-        err /= (int)mat_copy.size();
-        after_dis_err /= (int)mat_copy.size();
-        std::cout << "error before distortion" << err << std::endl
-                  << "error after distortion" << after_dis_err << std::endl;
-        Matrix original_lambda = Matrix((int)m_lambdas.size(), 1);
-        for (int i = 0; i < (int)m_lambdas.size(); i++)
-        {
-            original_lambda.assign(i, 0, std::get<0>(closest_set.at(0)).get_lambda().at(i));
-        }
-
-        // report the error information
-        Matrix c_diff = c0 - (q0k + qmk * original_lambda);
-        std::cout << "magnitude between estimated and real c: " << c_diff.magnitude() << std::endl;
-        float mag = (s - (q0k + qmk * original_lambda)).magnitude();
-        float after_dis_mag = (s - (q0k + qmk * lambda)).magnitude();
-        std::cout << "total magnitude before distortion" << mag << std::endl
-                  << "total magnitude after distortion" << after_dis_mag << std::endl;
-
         // assign the lambdas with adjusted values
         for (int z = 0; z < (int)m_lambdas.size(); ++z)
         {
@@ -282,7 +229,6 @@ std::tuple<std::vector<std::tuple<TriangleMesh, Matrix>>, float> Mesh::find_opti
         // sets using find_transformation_helper function
         pre_err = cur_err;
         cur_err = find_transformation_helper(mat_copy, c_ks, frame, &node, advanced, false);
-        std::cout << "current error: " << cur_err << std::endl;
     }
     c_ks.clear();
     std::vector<Matrix> s;
@@ -310,8 +256,6 @@ std::tuple<std::vector<std::tuple<TriangleMesh, Matrix>>, float> Mesh::find_opti
             c.push_back(std::get<1>(c_ks.at(i)));
         }
     }
-    float cur_err_new = get_error(s, c);
-    std::cout << "current error before passing back to main function is : " << cur_err_new << std::endl;
     // return both the frame transformation estimates and the set of closest points
     for (int i = 0; i < nSphere; ++i)
     {
@@ -383,7 +327,6 @@ float Mesh::find_transformation_helper(std::vector<Matrix> &mat, std::vector<std
             if (individual_err > 3 * err)
             {
                 mat.erase(mat.begin() + i);
-                std::cout << "erased matrix at index " << i << std::endl;
             }
         }
     }

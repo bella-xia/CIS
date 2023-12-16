@@ -44,15 +44,16 @@ public:
     // Return the vertice of a given index of the triangle.
     Matrix get_coord(int idx) const;
 
-    std::vector<float> get_lambda() const;
-
+    // Return the original coordinates of the triangle without modes.
     Matrix get_original_coord(int idx) const { return m_vertices_modes->at(0).at(m_vertex_index.at(idx)); }
 
+    // Return the mode associate with each coordinate
     Matrix get_mode_coord(int idx, int num_mode) const { return m_vertices_modes->at(num_mode + 1).at(m_vertex_index.at(idx)); }
 
     // Return the closest point on the triangle to a given matrix, along with the distance.
     std::tuple<float, Matrix> find_closest_point_in_triangle(Matrix mat);
 
+    // Return the barycentric coordinate of a given matrix relative to the coordinates of the triangle.
     Matrix get_bary(Matrix mat);
 };
 #endif

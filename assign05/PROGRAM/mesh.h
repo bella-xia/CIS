@@ -10,11 +10,11 @@ class Mesh
      * This class creates an abstraction of the 3D structures consists of triangles.
      */
 private:
-    std::vector<Matrix> m_vertices;
-    std::vector<std::vector<Matrix>> m_modes;
-    std::vector<TriangleMesh> m_triangles;
-    std::vector<float> m_lambdas;
-    int m_num_vertices, m_num_triangles;
+    std::vector<Matrix> m_vertices; // data of triangles' vertices
+    std::vector<std::vector<Matrix>> m_modes; // modes data, where mode[0] stores the original vertice value.
+    std::vector<TriangleMesh> m_triangles; // triangles in the mesh
+    std::vector<float> m_lambdas; // weight (lambda) associated with each mode
+    int m_num_vertices, m_num_triangles; // number of vertices and number of triangles
 
 public:
     // Default constructor of the Mesh
@@ -24,6 +24,7 @@ public:
 
     ~Mesh();
 
+    // initialize lambda to be 0
     void initiate_lambdas(int n_m = 1);
 
     // Insert a vertex into the mesh.
@@ -34,9 +35,13 @@ public:
     // This triangle is then inserted into m_triangles vector.
     void insert_triangle(Matrix m1, Matrix m2, Matrix m3,
                          int n_idx1, int n_idx2, int n_idx3, int v_idx1, int v_idx2, int v_idx3);
-
+    
+    // insert data of modes into the mesh
     void add_modes(const std::vector<std::vector<Matrix>> &modes) { m_modes = modes; }
+    
+    // return the lambdas
     std::vector<float> get_lambdas() { return m_lambdas; }
+
     // Return the vertex at a given index.
     Matrix get_vertex_at(int idx);
 
@@ -65,6 +70,8 @@ private:
     // find-optimum-transformation
     float find_transformation_helper(std::vector<Matrix> &mat, std::vector<std::tuple<TriangleMesh, Matrix>> &c_ks, Frame &frame, BoundingBoxTreeNode *node,
                                      bool advanced = true, bool has_outlier = false);
+    
+    // calculate the error between two sets of points.
     float get_error(std::vector<Matrix> s_s, std::vector<Matrix> c_s);
 };
 

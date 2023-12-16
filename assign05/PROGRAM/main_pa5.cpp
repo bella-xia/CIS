@@ -111,9 +111,6 @@ int main(int argc, char **argv)
     auto output = mesh.deformed_find_optimum_transformation(d_ks, 0.95);
 
     Frame f_estimate = std::get<0>(output);
-    std::cout << "frame transformation: " << std::endl;
-    f_estimate.get_rot().get_rot().print_str();
-    f_estimate.get_pos().get_pos().print_str();
     std::vector<Matrix> s_ks;
     std::vector<Matrix> c_ks;
     auto result = std::get<1>(output);

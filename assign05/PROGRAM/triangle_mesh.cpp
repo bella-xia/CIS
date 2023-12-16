@@ -109,16 +109,6 @@ std::tuple<float, Matrix> TriangleMesh::find_closest_point_in_triangle(Matrix ma
     return results;
 }
 
-std::vector<float> TriangleMesh::get_lambda() const
-{
-    std::vector<float> lambda_copy;
-    for (int i = 0; i < (int)m_lambdas->size(); i++)
-    {
-        lambda_copy.push_back(m_lambdas->at(i));
-    }
-    return lambda_copy;
-}
-
 Matrix TriangleMesh::get_bary(Matrix mat)
 {
     /** According to the Barycentric Form:
